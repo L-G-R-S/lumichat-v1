@@ -25,22 +25,37 @@ export const useChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [apiKey] = useState<string>('');
+  const [isBotpressConnected, setIsBotpressConnected] = useState(true);
   const { toast } = useToast();
 
   // Inicializar a conversa com Botpress quando o componente for montado
   useEffect(() => {
-    botpressService.initConversation()
-      .then(() => {
+    const initializeBot = async () => {
+      try {
+        await botpressService.initConversation();
         console.log("Botpress inicializado com sucesso");
-      })
-      .catch(error => {
+        setIsBotpressConnected(true);
+      } catch (error) {
         console.error("Falha ao inicializar o Botpress:", error);
-        toast({
-          title: "Modo Offline Ativado",
-          description: "Usando respostas locais enquanto tentamos reconectar.",
-          variant: "default"
-        });
-      });
+        setIsBotpressConnected(false);
+        
+        if (error instanceof Error && error.message.includes('CORS')) {
+          toast({
+            title: "Erro de CORS Detectado",
+            description: "Não é possível conectar diretamente à API do Botpress do navegador. É necessário um proxy ou backend intermediário.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Falha na Conexão com o Bot",
+            description: "Verifique sua conexão com a internet e tente novamente.",
+            variant: "destructive"
+          });
+        }
+      }
+    };
+    
+    initializeBot();
   }, []);
 
   const handleNewChat = () => {
@@ -56,8 +71,12 @@ export const useChat = () => {
     
     // Reiniciar a conversa com Botpress
     botpressService.initConversation()
+      .then(() => {
+        setIsBotpressConnected(true);
+      })
       .catch(error => {
         console.error("Falha ao inicializar nova conversa no Botpress:", error);
+        setIsBotpressConnected(false);
       });
   };
 
@@ -71,8 +90,12 @@ export const useChat = () => {
     
     // Reiniciar a conversa com Botpress
     botpressService.initConversation()
+      .then(() => {
+        setIsBotpressConnected(true);
+      })
       .catch(error => {
         console.error("Falha ao reiniciar conversa após limpar histórico:", error);
+        setIsBotpressConnected(false);
       });
   };
 
@@ -99,9 +122,6 @@ export const useChat = () => {
   };
 
   const addMessageToConversation = async (conversationId: string, content: string) => {
-    // Salvar mensagem do usuário para uso com o sistema de simulação
-    localStorage.setItem("lastUserMessage", content);
-    
     const userMessage: Message = {
       id: generateId(),
       type: "user",
@@ -125,11 +145,15 @@ export const useChat = () => {
     setIsLoading(true);
 
     try {
+      if (!isBotpressConnected) {
+        throw new Error("Botpress não está conectado");
+      }
+      
       // Enviar mensagem para o Botpress
       await botpressService.sendMessage(content);
       
       // Esperar um pouco para o Botpress processar
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Buscar a resposta do Botpress
       const botResponse = await botpressService.fetchBotResponse();
@@ -153,41 +177,33 @@ export const useChat = () => {
       );
     } catch (error) {
       console.error("Erro na comunicação com Botpress:", error);
+      
+      // Exibir toast de erro específico
       toast({
-        title: "Resposta Local",
-        description: "Usando resposta local devido a problemas de conexão.",
-        variant: "default"
+        title: "Erro de Comunicação",
+        description: "Não foi possível obter resposta do Botpress. Detalhes: " + 
+                    (error instanceof Error ? error.message : "Erro desconhecido"),
+        variant: "destructive"
       });
       
-      // Tentar usar resposta local mesmo em caso de erro
-      try {
-        const localResponse = await botpressService.fetchBotResponse();
-        
-        const botMessage: Message = {
-          id: generateId(),
-          type: "bot",
-          content: localResponse,
-        };
-        
-        setConversations((prev) =>
-          prev.map((conv) => {
-            if (conv.id === conversationId) {
-              return {
-                ...conv,
-                messages: [...conv.messages, botMessage],
-              };
-            }
-            return conv;
-          })
-        );
-      } catch (fallbackError) {
-        console.error("Erro fatal, nem mesmo resposta local funcionou:", fallbackError);
-        toast({
-          title: "Erro",
-          description: "Não foi possível obter resposta do assistente.",
-          variant: "destructive"
-        });
-      }
+      // Adicionar mensagem de erro como resposta do bot
+      const errorMessage: Message = {
+        id: generateId(),
+        type: "bot",
+        content: "Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.",
+      };
+      
+      setConversations((prev) =>
+        prev.map((conv) => {
+          if (conv.id === conversationId) {
+            return {
+              ...conv,
+              messages: [...conv.messages, errorMessage],
+            };
+          }
+          return conv;
+        })
+      );
     } finally {
       setIsLoading(false);
     }
