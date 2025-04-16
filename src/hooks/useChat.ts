@@ -20,6 +20,7 @@ export const useChat = () => {
     setActiveConversationId,
     createNewConversation,
     clearConversationHistory,
+    deleteConversation,
     addMessageToConversation
   } = useConversations();
 
@@ -68,6 +69,7 @@ export const useChat = () => {
     activeConversation,
     handleNewChat: createNewConversation,
     handleClearHistory: clearConversationHistory,
+    handleDeleteConversation: deleteConversation,
     handleSendMessage: sendMessage,
     setActiveConversationId,
     toggleDarkMode,

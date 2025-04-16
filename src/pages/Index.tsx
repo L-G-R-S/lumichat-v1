@@ -14,6 +14,7 @@ const Index = () => {
     activeConversation,
     handleNewChat,
     handleClearHistory,
+    handleDeleteConversation,
     handleSendMessage,
     setActiveConversationId,
     toggleDarkMode,
@@ -41,6 +42,7 @@ const Index = () => {
       <Sidebar
         onNewChat={handleNewChat}
         onClearHistory={handleClearHistory}
+        onDeleteConversation={handleDeleteConversation}
         conversations={conversations}
         activeConversation={activeConversationId}
         onSelectConversation={setActiveConversationId}

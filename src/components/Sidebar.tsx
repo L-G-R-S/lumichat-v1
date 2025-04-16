@@ -1,13 +1,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon } from "lucide-react";
+import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/sonner";
 
 interface SidebarProps {
   onNewChat: () => void;
   onClearHistory: () => void;
+  onDeleteConversation?: (id: string) => void;
   conversations: { id: string; title: string }[];
   activeConversation: string | null;
   onSelectConversation: (id: string) => void;
@@ -18,6 +20,7 @@ interface SidebarProps {
 const Sidebar = ({
   onNewChat,
   onClearHistory,
+  onDeleteConversation,
   conversations,
   activeConversation,
   onSelectConversation,
@@ -29,6 +32,13 @@ const Sidebar = ({
   
   // Automatically collapse sidebar on mobile
   const isActuallyCollapsed = isMobile ? true : isCollapsed;
+
+  const handleDeleteClick = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Prevents triggering the conversation selection
+    if (onDeleteConversation) {
+      onDeleteConversation(id);
+    }
+  };
 
   return (
     <div className={`fixed top-0 left-0 z-30 h-full transition-all duration-300 ${
@@ -67,15 +77,31 @@ const Sidebar = ({
           {conversations.length > 0 && (
             <div className="flex-1 overflow-y-auto mb-4 space-y-1">
               {conversations.map((conversation) => (
-                <Button
+                <div 
                   key={conversation.id}
-                  variant={activeConversation === conversation.id ? "secondary" : "ghost"}
-                  className="w-full justify-start text-sm font-normal truncate"
-                  onClick={() => onSelectConversation(conversation.id)}
+                  className="flex group items-center"
                 >
-                  <MessageSquarePlus className="mr-2 h-4 w-4 shrink-0" />
-                  <span className="truncate">{conversation.title}</span>
-                </Button>
+                  <Button
+                    variant={activeConversation === conversation.id ? "secondary" : "ghost"}
+                    className="w-full justify-start text-sm font-normal truncate pr-8 relative"
+                    onClick={() => onSelectConversation(conversation.id)}
+                  >
+                    <MessageSquarePlus className="mr-2 h-4 w-4 shrink-0" />
+                    <span className="truncate">{conversation.title}</span>
+                    
+                    {onDeleteConversation && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => handleDeleteClick(e, conversation.id)}
+                        aria-label="Excluir conversa"
+                      >
+                        <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                      </Button>
+                    )}
+                  </Button>
+                </div>
               ))}
             </div>
           )}
