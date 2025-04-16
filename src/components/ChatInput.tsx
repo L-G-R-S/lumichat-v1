@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Send, Mic } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -46,28 +46,38 @@ const ChatInput: React.FC<ChatInputProps> = ({
   }, [message]);
 
   return (
-    <div className="flex items-end gap-2 bg-background border rounded-lg p-2">
+    <div className="flex items-end gap-2 bg-background border rounded-full p-2 pl-4">
       <Textarea
         ref={textareaRef}
-        placeholder="Digite sua mensagem..."
-        className="min-h-[50px] max-h-[200px] border-0 focus-visible:ring-0 resize-none"
+        placeholder="Como posso ajudar?"
+        className="min-h-[40px] max-h-[200px] border-0 focus-visible:ring-0 resize-none bg-transparent"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isDisabled || isLoading}
       />
       
-      <Button
-        className={`rounded-full h-10 w-10 p-0 ${
-          !message.trim() || isDisabled || isLoading ? "opacity-50" : "opacity-100"
-        }`}
-        size="icon"
-        type="button"
-        onClick={handleSendMessage}
-        disabled={!message.trim() || isDisabled || isLoading}
-      >
-        <Send className="h-4 w-4" />
-      </Button>
+      <div className="flex gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          type="button"
+          className="rounded-full h-8 w-8"
+          disabled={isDisabled || isLoading}
+        >
+          <Mic className="h-4 w-4 text-muted-foreground" />
+        </Button>
+        
+        <Button
+          className="rounded-full h-9 w-9 p-0"
+          size="icon"
+          type="button"
+          onClick={handleSendMessage}
+          disabled={!message.trim() || isDisabled || isLoading}
+        >
+          <Send className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

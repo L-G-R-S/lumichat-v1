@@ -9,40 +9,47 @@ interface ChatMessageProps {
     content: string;
     pending?: boolean;
   };
-  type?: "user" | "bot";
-  content?: string;
-  isLoading?: boolean;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, type, content, isLoading }) => {
-  // Use message object if provided, otherwise use type/content props
-  const isBot = message ? message.role === "assistant" : type === "bot";
-  const messageContent = message ? message.content : content;
-  const isPending = message ? message.pending : isLoading;
+const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+  if (!message) return null;
+  
+  const isBot = message.role === "assistant";
+  const isPending = message.pending;
   
   return (
     <div className={cn(
-      "flex w-full gap-3 p-4",
-      isBot ? "bg-muted/30" : ""
+      "flex gap-3 max-w-full",
+      isBot ? "justify-start" : "justify-end"
     )}>
-      <div className={cn(
-        "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md",
-        isBot ? "bg-primary text-primary-foreground" : "bg-muted"
-      )}>
-        {isBot ? <Bot size={18} /> : <User size={18} />}
-      </div>
+      {isBot && (
+        <div className="flex h-8 w-8 rounded-full bg-primary text-primary-foreground items-center justify-center shrink-0">
+          <Bot size={18} />
+        </div>
+      )}
       
-      <div className="flex-1 space-y-2">
-        <div className="prose prose-slate dark:prose-invert break-words">
-          {messageContent || (isPending ? 
+      <div className={cn(
+        "px-4 py-3 rounded-2xl max-w-[80%]",
+        isBot 
+          ? "bg-secondary text-secondary-foreground rounded-bl-none" 
+          : "bg-primary text-primary-foreground rounded-br-none"
+      )}>
+        <div className="prose prose-sm dark:prose-invert break-words">
+          {message.content || (isPending ? 
             <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse" />
-              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse delay-75" />
-              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse delay-150" />
+              <span className="h-2 w-2 rounded-full bg-current opacity-60 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-current opacity-60 animate-pulse delay-75" />
+              <span className="h-2 w-2 rounded-full bg-current opacity-60 animate-pulse delay-150" />
             </span> : 
             "...")}
         </div>
       </div>
+      
+      {!isBot && (
+        <div className="flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
+          <User size={18} />
+        </div>
+      )}
     </div>
   );
 };
