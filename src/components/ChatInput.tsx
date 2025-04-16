@@ -6,18 +6,20 @@ import { Send } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+  isLoading?: boolean;
   isDisabled?: boolean;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ 
   onSendMessage, 
+  isLoading = false,
   isDisabled = false 
 }) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
-    if (message.trim() && !isDisabled) {
+    if (message.trim() && !isDisabled && !isLoading) {
       onSendMessage(message);
       setMessage("");
     }
@@ -52,17 +54,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        disabled={isDisabled}
+        disabled={isDisabled || isLoading}
       />
       
       <Button
         className={`rounded-full h-10 w-10 p-0 ${
-          !message.trim() || isDisabled ? "opacity-50" : "opacity-100"
+          !message.trim() || isDisabled || isLoading ? "opacity-50" : "opacity-100"
         }`}
         size="icon"
         type="button"
         onClick={handleSendMessage}
-        disabled={!message.trim() || isDisabled}
+        disabled={!message.trim() || isDisabled || isLoading}
       >
         <Send className="h-4 w-4" />
       </Button>
