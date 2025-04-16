@@ -19,20 +19,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   
   return (
     <div className={cn(
-      "flex gap-3 max-w-full",
+      "px-4 py-6 flex items-start gap-4 max-w-5xl mx-auto",
       isBot ? "justify-start" : "justify-end"
     )}>
       {isBot && (
-        <div className="flex h-8 w-8 rounded-full bg-primary text-primary-foreground items-center justify-center shrink-0">
-          <Bot size={18} />
+        <div className="flex h-9 w-9 rounded-full bg-primary/20 text-primary items-center justify-center shrink-0">
+          <Bot size={20} />
         </div>
       )}
       
       <div className={cn(
-        "px-4 py-3 rounded-2xl max-w-[80%]",
+        "px-5 py-4 rounded-2xl max-w-[85%]",
         isBot 
-          ? "bg-secondary text-secondary-foreground rounded-bl-none" 
-          : "bg-primary text-primary-foreground rounded-br-none"
+          ? "bg-secondary text-secondary-foreground rounded-tl-none border border-border/50" 
+          : "bg-primary text-primary-foreground rounded-tr-none"
       )}>
         <div className="prose prose-sm dark:prose-invert break-words">
           {message.content || (isPending ? 
@@ -46,8 +46,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       </div>
       
       {!isBot && (
-        <div className="flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
-          <User size={18} />
+        <div className="flex h-9 w-9 rounded-full bg-muted text-muted-foreground items-center justify-center shrink-0">
+          <User size={20} />
         </div>
       )}
     </div>
