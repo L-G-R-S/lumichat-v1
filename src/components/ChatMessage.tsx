@@ -27,8 +27,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       </div>
       
       <div className={cn(
-        "flex-1 px-4 py-3",
-        isBotMessage ? "chat-bubble-bot" : "chat-bubble-user"
+        "flex-1 px-4 py-3 rounded-lg",
+        isBotMessage 
+          ? "bg-secondary/50 text-foreground" 
+          : "bg-primary/5 text-foreground"
       )}>
         {isLoading ? (
           <div className="flex items-center gap-1">

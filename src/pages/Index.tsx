@@ -102,7 +102,61 @@ const Index = () => {
   const handleSendMessage = (content: string) => {
     // Se não houver conversa ativa, criar uma nova
     if (!activeConversationId) {
-      handleNewChat();
+      const newId = generateId();
+      const newConversation: Conversation = {
+        id: newId,
+        title: content.slice(0, 30) + (content.length > 30 ? "..." : ""),
+        messages: [],
+      };
+      
+      setConversations((prev) => [newConversation, ...prev]);
+      setActiveConversationId(newId);
+      
+      // Adicionar a mensagem após o novo chat ter sido criado
+      setTimeout(() => {
+        const userMessage: Message = {
+          id: generateId(),
+          type: "user",
+          content,
+        };
+        
+        setConversations((prev) =>
+          prev.map((conv) => {
+            if (conv.id === newId) {
+              return {
+                ...conv,
+                messages: [...conv.messages, userMessage],
+              };
+            }
+            return conv;
+          })
+        );
+        
+        // Simular resposta da IA
+        setIsLoading(true);
+        setTimeout(() => {
+          const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+          const botMessage: Message = {
+            id: generateId(),
+            type: "bot",
+            content: randomResponse,
+          };
+          
+          setConversations((prev) =>
+            prev.map((conv) => {
+              if (conv.id === newId) {
+                return {
+                  ...conv,
+                  messages: [...conv.messages, botMessage],
+                };
+              }
+              return conv;
+            })
+          );
+          setIsLoading(false);
+        }, 1000 + Math.random() * 2000);
+      }, 0);
+      
       return;
     }
     
@@ -158,6 +212,13 @@ const Index = () => {
     }, 1000 + Math.random() * 2000);
   };
 
+  // Autoiniciar uma nova conversa se não houver nenhuma
+  useEffect(() => {
+    if (conversations.length === 0) {
+      handleNewChat();
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sidebar */}
@@ -173,43 +234,40 @@ const Index = () => {
       
       {/* Main Content */}
       <main className="flex-1 flex flex-col pl-0 lg:pl-[280px]">
-        {/* Chat Area */}
         <div className="flex-1 flex flex-col overflow-auto min-h-screen">
-          {/* No active conversation */}
-          {!activeConversation && (
-            <WelcomeScreen />
+          {/* Tela de boas-vindas (sem conversa ativa) */}
+          {(!activeConversation || (activeConversation && activeConversation.messages.length === 0)) && (
+            <WelcomeScreen onSampleQuestionClick={handleSendMessage} />
           )}
           
-          {/* Active conversation */}
-          {activeConversation && (
-            <>
-              <div className="flex-1 pt-4 pb-32 overflow-auto">
-                {activeConversation.messages.map((message) => (
-                  <ChatMessage
-                    key={message.id}
-                    type={message.type}
-                    content={message.content}
-                  />
-                ))}
-                
-                {isLoading && (
-                  <ChatMessage
-                    type="bot"
-                    content=""
-                    isLoading={true}
-                  />
-                )}
-              </div>
-              
-              {/* Chat input - fixed at bottom */}
-              <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm pt-4 pb-4 lg:pl-[280px]">
-                <ChatInput
-                  onSendMessage={handleSendMessage}
-                  isLoading={isLoading}
+          {/* Área de conversa ativa */}
+          {activeConversation && activeConversation.messages.length > 0 && (
+            <div className="flex-1 pt-4 pb-32 overflow-auto">
+              {activeConversation.messages.map((message) => (
+                <ChatMessage
+                  key={message.id}
+                  type={message.type}
+                  content={message.content}
                 />
-              </div>
-            </>
+              ))}
+              
+              {isLoading && (
+                <ChatMessage
+                  type="bot"
+                  content=""
+                  isLoading={true}
+                />
+              )}
+            </div>
           )}
+          
+          {/* Input de chat fixo na parte inferior */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm pt-4 pb-4 lg:pl-[280px]">
+            <ChatInput
+              onSendMessage={handleSendMessage}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </main>
     </div>

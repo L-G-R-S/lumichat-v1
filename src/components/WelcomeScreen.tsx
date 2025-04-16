@@ -2,7 +2,18 @@
 import React from "react";
 import { Bot, Search, Lightbulb, Sparkles } from "lucide-react";
 
-const WelcomeScreen: React.FC = () => {
+interface WelcomeScreenProps {
+  onSampleQuestionClick: (question: string) => void;
+}
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) => {
+  const sampleQuestions = [
+    "Explique como funcionam os buracos negros",
+    "Quais são os benefícios da meditação?",
+    "Crie uma lista de exercícios para melhorar a postura",
+    "Quais são as tendências de tecnologia para 2025?",
+  ];
+
   return (
     <div className="flex flex-col items-center justify-center px-4 py-12 max-w-3xl mx-auto text-center">
       <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
@@ -55,18 +66,15 @@ const WelcomeScreen: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <button className="p-3 text-sm text-left border rounded-lg hover:bg-accent transition-colors">
-            Explique como funcionam os buracos negros
-          </button>
-          <button className="p-3 text-sm text-left border rounded-lg hover:bg-accent transition-colors">
-            Quais são os benefícios da meditação?
-          </button>
-          <button className="p-3 text-sm text-left border rounded-lg hover:bg-accent transition-colors">
-            Crie uma lista de exercícios para melhorar a postura
-          </button>
-          <button className="p-3 text-sm text-left border rounded-lg hover:bg-accent transition-colors">
-            Quais são as tendências de tecnologia para 2025?
-          </button>
+          {sampleQuestions.map((question, index) => (
+            <button 
+              key={index} 
+              className="p-3 text-sm text-left border rounded-lg hover:bg-accent transition-colors"
+              onClick={() => onSampleQuestionClick(question)}
+            >
+              {question}
+            </button>
+          ))}
         </div>
       </div>
     </div>
