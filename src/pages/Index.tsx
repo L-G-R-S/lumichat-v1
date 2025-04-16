@@ -1,10 +1,9 @@
 
-import { useChat } from "@/hooks/useChat";
 import LumiChat from "@/components/LumiChat";
 
 const Index = () => {
   return (
-    <div className="h-screen w-full bg-background">
+    <div className="flex flex-col h-screen bg-background">
       <LumiChat />
     </div>
   );
