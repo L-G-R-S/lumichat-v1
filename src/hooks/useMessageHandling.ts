@@ -44,7 +44,7 @@ export const useMessageHandling = (
         throw new Error("Serviço de IA não está conectado");
       }
       
-      // Enviar mensagem para a Cohere e obter resposta diretamente
+      // Enviar mensagem para a Cohere e obter resposta
       const botResponse = await cohereService.sendMessage(content);
       
       const botMessage: Message = {
