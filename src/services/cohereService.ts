@@ -1,3 +1,4 @@
+
 /**
  * Cohere API service
  * Handles communication with the Cohere API for chat functionalities
@@ -25,9 +26,70 @@ A **API da Cohere** **não interpreta arquivos PDF, imagens ou faz busca na web 
 Essas funções adicionais (como interpretar arquivos, rodar cálculos ou buscar na web) precisam ser implementadas no **backend do seu projeto**.
 `;
 
-// Função para adicionar o contexto extra ao prompt do usuário
+// Função para detector idioma (simplificada)
+function detectLanguage(text: string): string {
+  // Lista de palavras comuns em português
+  const ptWords = ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 
+                  'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi',
+                  'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito',
+                  'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso',
+                  'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem',
+                  'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num',
+                  'nem', 'suas', 'meu', 'às', 'minha', 'têm', 'numa', 'pelos', 'elas', 'havia',
+                  'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses',
+                  'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus',
+                  'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas',
+                  'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles',
+                  'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive',
+                  'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera',
+                  'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos',
+                  'estivessem', 'estiver', 'estivermos', 'estiverem'];
+
+  // Lista de palavras comuns em inglês
+  const enWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I', 'it', 'for',
+                  'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by',
+                  'from', 'they', 'we', 'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one',
+                  'all', 'would', 'there', 'their', 'what', 'so', 'up', 'out', 'if', 'about',
+                  'who', 'get', 'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time', 'no',
+                  'just', 'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some',
+                  'could', 'them', 'see', 'other', 'than', 'then', 'now', 'look', 'only', 'come',
+                  'its', 'over', 'think', 'also', 'back', 'after', 'use', 'two', 'how', 'our',
+                  'work', 'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these',
+                  'give', 'day', 'most', 'us'];
+
+  // Preparar o texto para análise (remover pontuação, converter para minúsculas)
+  const cleanText = text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+  const words = cleanText.split(/\s+/);
+  
+  let ptCount = 0;
+  let enCount = 0;
+  
+  // Contar ocorrências de palavras em cada idioma
+  words.forEach(word => {
+    if (ptWords.includes(word)) ptCount++;
+    if (enWords.includes(word)) enCount++;
+  });
+  
+  // Se não encontrar nenhuma palavra nas listas, verificar caracteres específicos do português
+  if (ptCount === 0 && enCount === 0) {
+    const ptChars = ['ç', 'á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú'];
+    for (const char of ptChars) {
+      if (text.toLowerCase().includes(char)) return 'pt';
+    }
+  }
+  
+  // Com prioridade para português - mesmo se for igual, retorna português
+  return (ptCount >= enCount) ? 'pt' : 'en';
+}
+
+// Função para adicionar instruções sobre o idioma ao prompt
 export function enhancePromptWithExtraContext(originalPrompt: string): string {
-  return `${EXTRA_CONTEXT}\n\nContexto original do usuário:\n${originalPrompt}`;
+  const detectedLanguage = detectLanguage(originalPrompt);
+  const languageInstruction = detectedLanguage === 'pt' 
+    ? "Responda em português do Brasil. O usuário está falando em português, então mantenha suas respostas em português brasileiro, com linguagem natural e fluida."
+    : "The user is writing in English. Please respond in English, but if you recognize Portuguese words or phrases, consider responding in Portuguese instead.";
+  
+  return `${languageInstruction}\n\n${EXTRA_CONTEXT}\n\nContexto original do usuário:\n${originalPrompt}`;
 }
 
 // Initialize a conversation
