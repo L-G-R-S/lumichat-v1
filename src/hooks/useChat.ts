@@ -30,12 +30,15 @@ export const useChat = () => {
   // Inicializar a conversa com Botpress quando o componente for montado
   useEffect(() => {
     botpressService.initConversation()
+      .then(() => {
+        console.log("Botpress inicializado com sucesso");
+      })
       .catch(error => {
         console.error("Falha ao inicializar o Botpress:", error);
         toast({
-          title: "Erro de Conexão",
-          description: "Não foi possível conectar ao assistente virtual.",
-          variant: "destructive"
+          title: "Modo Offline Ativado",
+          description: "Usando respostas locais enquanto tentamos reconectar.",
+          variant: "default"
         });
       });
   }, []);
@@ -96,6 +99,9 @@ export const useChat = () => {
   };
 
   const addMessageToConversation = async (conversationId: string, content: string) => {
+    // Salvar mensagem do usuário para uso com o sistema de simulação
+    localStorage.setItem("lastUserMessage", content);
+    
     const userMessage: Message = {
       id: generateId(),
       type: "user",
@@ -148,10 +154,40 @@ export const useChat = () => {
     } catch (error) {
       console.error("Erro na comunicação com Botpress:", error);
       toast({
-        title: "Erro",
-        description: "Não foi possível obter a resposta do assistente.",
-        variant: "destructive"
+        title: "Resposta Local",
+        description: "Usando resposta local devido a problemas de conexão.",
+        variant: "default"
       });
+      
+      // Tentar usar resposta local mesmo em caso de erro
+      try {
+        const localResponse = await botpressService.fetchBotResponse();
+        
+        const botMessage: Message = {
+          id: generateId(),
+          type: "bot",
+          content: localResponse,
+        };
+        
+        setConversations((prev) =>
+          prev.map((conv) => {
+            if (conv.id === conversationId) {
+              return {
+                ...conv,
+                messages: [...conv.messages, botMessage],
+              };
+            }
+            return conv;
+          })
+        );
+      } catch (fallbackError) {
+        console.error("Erro fatal, nem mesmo resposta local funcionou:", fallbackError);
+        toast({
+          title: "Erro",
+          description: "Não foi possível obter resposta do assistente.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
