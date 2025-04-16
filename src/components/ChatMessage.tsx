@@ -2,14 +2,23 @@
 import React from "react";
 import { Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Message } from "@/hooks/useCohere";
 
 interface ChatMessageProps {
-  message: Message;
+  message?: {
+    role: "user" | "assistant";
+    content: string;
+    pending?: boolean;
+  };
+  type?: "user" | "bot";
+  content?: string;
+  isLoading?: boolean;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
-  const isBot = message.role === "assistant";
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, type, content, isLoading }) => {
+  // Use message object if provided, otherwise use type/content props
+  const isBot = message ? message.role === "assistant" : type === "bot";
+  const messageContent = message ? message.content : content;
+  const isPending = message ? message.pending : isLoading;
   
   return (
     <div className={cn(
@@ -25,7 +34,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       
       <div className="flex-1 space-y-2">
         <div className="prose prose-slate dark:prose-invert break-words">
-          {message.content || (message.pending ? 
+          {messageContent || (isPending ? 
             <span className="inline-flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse" />
               <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse delay-75" />
