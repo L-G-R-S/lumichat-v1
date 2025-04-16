@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Message } from "@/types/chat";
 import { generateId } from "@/utils/chatUtils";
@@ -27,10 +28,7 @@ export const useMessageHandling = (
   };
 
   const handleSendMessageToAI = async (conversationId: string, content: string) => {
-    // Adiciona contexto extra ao prompt usando a nova função
-    const enhancedContent = cohereService.enhancePromptWithExtraContext(content);
-    
-    // Resto do código permanece igual...
+    // Add user message to the conversation
     const userMessage: Message = {
       id: generateId(),
       type: "user",
@@ -47,7 +45,7 @@ export const useMessageHandling = (
       }
       
       // Enviar mensagem para a Cohere e obter resposta diretamente
-      const botResponse = await cohereService.sendMessage(enhancedContent);
+      const botResponse = await cohereService.sendMessage(content);
       
       const botMessage: Message = {
         id: generateId(),
