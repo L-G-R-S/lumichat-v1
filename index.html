@@ -16,10 +16,6 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    
-    <!-- Script do WebChat da Botpress - Novo método de incorporação -->
-    <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2025/04/16/16/20250416161605-KYAVI2FS.js"></script>
   </head>
 
   <body>
@@ -27,5 +23,30 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Script do WebChat da Botpress - Método de incorporação atualizado -->
+    <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+    <script>
+      setTimeout(() => {
+        if (typeof window.botpressWebChat !== 'undefined') {
+          console.log('Botpress WebChat está disponível, inicializando...');
+          window.botpressWebChat.init({
+            composerPlaceholder: "Digite sua pergunta...",
+            botId: "lumichat",
+            clientId: "ef6613e3-17b1-41ca-9b8c-9db703b123cc",
+            hostUrl: "https://cdn.botpress.cloud/webchat/v2.3",
+            messagingUrl: "https://messaging.botpress.cloud",
+            botName: "LumiChat",
+            avatarUrl: "https://cdn-icons-png.flaticon.com/512/4712/4712107.png",
+            themeName: "prism",
+            enableTranscriptDownload: false,
+            showPoweredBy: false
+          });
+        } else {
+          console.error('Botpress WebChat não está disponível após carregar inject.js');
+        }
+      }, 1000);
+    </script>
+    <script src="https://files.bpcontent.cloud/2025/04/16/16/20250416161605-KYAVI2FS.js"></script>
   </body>
 </html>
