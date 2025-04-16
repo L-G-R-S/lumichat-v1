@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "./use-toast";
+import * as botpressService from "@/services/botpressService";
 
 // Types
 export interface Message {
@@ -26,6 +27,19 @@ export const useChat = () => {
   const [apiKey] = useState<string>('');
   const { toast } = useToast();
 
+  // Inicializar a conversa com Botpress quando o componente for montado
+  useEffect(() => {
+    botpressService.initConversation()
+      .catch(error => {
+        console.error("Falha ao inicializar o Botpress:", error);
+        toast({
+          title: "Erro de Conexão",
+          description: "Não foi possível conectar ao assistente virtual.",
+          variant: "destructive"
+        });
+      });
+  }, []);
+
   const handleNewChat = () => {
     const newId = generateId();
     const newConversation: Conversation = {
@@ -36,6 +50,12 @@ export const useChat = () => {
     
     setConversations((prev) => [newConversation, ...prev]);
     setActiveConversationId(newId);
+    
+    // Reiniciar a conversa com Botpress
+    botpressService.initConversation()
+      .catch(error => {
+        console.error("Falha ao inicializar nova conversa no Botpress:", error);
+      });
   };
 
   const handleClearHistory = () => {
@@ -45,6 +65,12 @@ export const useChat = () => {
     });
     setConversations([]);
     setActiveConversationId(null);
+    
+    // Reiniciar a conversa com Botpress
+    botpressService.initConversation()
+      .catch(error => {
+        console.error("Falha ao reiniciar conversa após limpar histórico:", error);
+      });
   };
 
   const handleSendMessage = async (content: string) => {
@@ -93,33 +119,40 @@ export const useChat = () => {
     setIsLoading(true);
 
     try {
-      // Simulação de resposta, já que o Botpress estará lidando com as respostas reais
-      setTimeout(() => {
-        const botMessage: Message = {
-          id: generateId(),
-          type: "bot",
-          content: "Esta mensagem está sendo exibida apenas na interface. As respostas reais serão fornecidas pelo widget do Botpress no canto inferior direito da tela.",
-        };
-        
-        setConversations((prev) =>
-          prev.map((conv) => {
-            if (conv.id === conversationId) {
-              return {
-                ...conv,
-                messages: [...conv.messages, botMessage],
-              };
-            }
-            return conv;
-          })
-        );
-        setIsLoading(false);
-      }, 1000);
+      // Enviar mensagem para o Botpress
+      await botpressService.sendMessage(content);
+      
+      // Esperar um pouco para o Botpress processar
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Buscar a resposta do Botpress
+      const botResponse = await botpressService.fetchBotResponse();
+      
+      const botMessage: Message = {
+        id: generateId(),
+        type: "bot",
+        content: botResponse,
+      };
+      
+      setConversations((prev) =>
+        prev.map((conv) => {
+          if (conv.id === conversationId) {
+            return {
+              ...conv,
+              messages: [...conv.messages, botMessage],
+            };
+          }
+          return conv;
+        })
+      );
     } catch (error) {
+      console.error("Erro na comunicação com Botpress:", error);
       toast({
         title: "Erro",
-        description: "Não foi possível obter a resposta.",
+        description: "Não foi possível obter a resposta do assistente.",
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
