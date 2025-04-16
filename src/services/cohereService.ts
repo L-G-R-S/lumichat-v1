@@ -82,6 +82,15 @@ export const streamChatResponse = async (
   onComplete: () => void
 ) => {
   try {
+    // Add user message to context
+    const userMsg = {
+      role: "USER",
+      message: userMessage,
+    };
+    
+    // Add to context for future messages
+    conversationContext.push(userMsg);
+    
     const stream = await client.chatStream({
       model: "command-r",
       temperature: 0.3,
@@ -98,11 +107,21 @@ export const streamChatResponse = async (
       }))
     });
 
+    let fullResponse = "";
+    
     for await (const chunk of stream) {
       if (chunk.eventType === "text-generation") {
         onMessageChunk(chunk.text || "");
+        fullResponse += chunk.text || "";
       }
     }
+    
+    // Add assistant response to context
+    const assistantMsg = {
+      role: "ASSISTANT", 
+      message: fullResponse
+    };
+    conversationContext.push(assistantMsg);
     
     onComplete();
   } catch (error) {
