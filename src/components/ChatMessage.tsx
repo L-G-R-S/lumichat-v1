@@ -2,47 +2,37 @@
 import React from "react";
 import { Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type MessageType = "user" | "bot";
+import { Message } from "@/hooks/useCohere";
 
 interface ChatMessageProps {
-  type: MessageType;
-  content: string;
-  isLoading?: boolean;
+  message: Message;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = false }) => {
-  const isBotMessage = type === "bot";
+const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+  const isBot = message.role === "assistant";
   
   return (
     <div className={cn(
-      "flex w-full max-w-4xl mx-auto gap-4 p-4 animate-fade-in",
-      isBotMessage ? "items-start" : "items-start"
+      "flex w-full gap-3 p-4",
+      isBot ? "bg-muted/30" : ""
     )}>
       <div className={cn(
-        "flex items-center justify-center w-9 h-9 rounded-md shrink-0",
-        isBotMessage ? "bg-primary text-white" : "bg-secondary text-foreground"
+        "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md",
+        isBot ? "bg-primary text-primary-foreground" : "bg-muted"
       )}>
-        {isBotMessage ? <Bot size={20} /> : <User size={20} />}
+        {isBot ? <Bot size={18} /> : <User size={18} />}
       </div>
       
-      <div className={cn(
-        "flex-1 px-4 py-3 rounded-lg",
-        isBotMessage 
-          ? "bg-secondary/50 text-foreground" 
-          : "bg-primary/5 text-foreground"
-      )}>
-        {isLoading ? (
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" />
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-75" />
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-150" />
-          </div>
-        ) : (
-          <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-            {content}
-          </div>
-        )}
+      <div className="flex-1 space-y-2">
+        <div className="prose prose-slate dark:prose-invert break-words">
+          {message.content || (message.pending ? 
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse delay-75" />
+              <span className="h-2 w-2 rounded-full bg-primary/40 animate-pulse delay-150" />
+            </span> : 
+            "...")}
+        </div>
       </div>
     </div>
   );

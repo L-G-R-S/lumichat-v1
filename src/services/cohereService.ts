@@ -1,87 +1,49 @@
 
-/**
- * Cohere API service
- * Handles communication with the Cohere API for chat functionalities
- */
+import { CohereClient } from "cohere-ai";
 
+// Using the same API key as provided in the sample code
+// In a production environment, this should be stored securely
 const COHERE_API_KEY = "GVzEDDuMb62mmw2WzFxtjDrY6aEDEavRdKtO2P4b";
-const API_URL = "https://api.cohere.ai/v1/generate";
+const client = new CohereClient({
+  token: COHERE_API_KEY,
+});
 
-// Initialize a conversation
-export async function initConversation(): Promise<string> {
-  // No initialization needed for Cohere, but returning a conversation ID for consistency
-  return `cohere-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-}
-
-// Send message to Cohere and get response
-export async function sendMessage(message: string): Promise<string> {
+export const streamChatResponse = async (
+  userMessage: string,
+  onMessageChunk: (chunk: string) => void,
+  onComplete: () => void
+) => {
   try {
-    console.log("Enviando mensagem para a Cohere:", message);
-    
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${COHERE_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "command",
-        prompt: message,
-        max_tokens: 300,
-        temperature: 0.8,
-        k: 0,
-        stop_sequences: [],
-        return_likelihoods: "NONE"
-      })
+    const stream = await client.chatStream({
+      model: "command-r",
+      temperature: 0.3,
+      messages: [
+        {
+          role: "SYSTEM",
+          message: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
+          Seu nome é Lumi e não Command. Nunca se identifique como Command. 
+          Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
+
+          Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
+          Responda sempre com empatia e profissionalismo.`
+        },
+        {
+          role: "USER",
+          message: userMessage
+        }
+      ]
     });
 
-    if (!response.ok) {
-      throw new Error(`Cohere API returned ${response.status}: ${response.statusText}`);
+    for await (const chunk of stream) {
+      if (chunk.eventType === "text-generation") {
+        onMessageChunk(chunk.text || "");
+      }
     }
-
-    const data = await response.json();
     
-    if (data.generations && data.generations.length > 0) {
-      const botResponse = data.generations[0].text.trim();
-      console.log("Resposta da Cohere:", botResponse);
-      return botResponse;
-    } else {
-      console.error("Resposta da Cohere não contém gerações:", data);
-      return "Desculpe, não consegui gerar uma resposta.";
-    }
+    onComplete();
   } catch (error) {
-    console.error("Erro ao enviar mensagem para a Cohere:", error);
-    throw error;
+    console.error("Erro ao comunicar com a API da Cohere:", error);
+    onMessageChunk("\n\nOcorreu um erro ao comunicar com a Lumi. Por favor, tente novamente.");
+    onComplete();
   }
-}
-
-// No separate fetch needed for Cohere as the response is returned directly from sendMessage
-export async function fetchBotResponse(): Promise<string> {
-  // This function isn't needed for Cohere implementation but kept for API compatibility
-  return ""; // This will never be called as we modified the useMessageHandling hook
-}
-
-// Check connection with Cohere API
-export async function checkConnection(): Promise<boolean> {
-  try {
-    // Simple connection test - send a basic prompt
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${COHERE_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "command",
-        prompt: "Hello",
-        max_tokens: 5,
-        temperature: 0.8,
-      })
-    });
-    
-    return response.ok;
-  } catch (error) {
-    console.error("Erro ao verificar conexão com Cohere:", error);
-    return false;
-  }
-}
+};
