@@ -3,18 +3,27 @@ import { Message } from "@/hooks/useChat";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import WelcomeScreen from "./WelcomeScreen";
+import ApiKeyInput from "./ApiKeyInput";
 
 interface ChatAreaProps {
   messages: Message[];
   isLoading: boolean;
   onSendMessage: (message: string) => void;
+  apiKey: string;
+  onApiKeySubmit: (key: string) => void;
 }
 
-const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
+const ChatArea = ({ messages, isLoading, onSendMessage, apiKey, onApiKeySubmit }: ChatAreaProps) => {
   const showWelcome = messages.length === 0;
 
   return (
     <div className="flex-1 flex flex-col overflow-auto min-h-screen">
+      {!apiKey && (
+        <div className="mx-auto max-w-2xl w-full px-4 mt-4">
+          <ApiKeyInput apiKey={apiKey} onApiKeySubmit={onApiKeySubmit} />
+        </div>
+      )}
+      
       {showWelcome ? (
         <WelcomeScreen onSampleQuestionClick={onSendMessage} />
       ) : (
@@ -48,4 +57,3 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
 };
 
 export default ChatArea;
-

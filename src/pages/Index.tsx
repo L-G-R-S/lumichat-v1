@@ -10,12 +10,14 @@ const Index = () => {
     activeConversationId,
     isLoading,
     isDarkMode,
+    apiKey,
     activeConversation,
     handleNewChat,
     handleClearHistory,
     handleSendMessage,
     setActiveConversationId,
     toggleDarkMode,
+    updateApiKey,
   } = useChat();
 
   // Auto-start a new conversation if none exists
@@ -52,6 +54,8 @@ const Index = () => {
           messages={activeConversation?.messages || []}
           isLoading={isLoading}
           onSendMessage={handleSendMessage}
+          apiKey={apiKey}
+          onApiKeySubmit={updateApiKey}
         />
       </main>
     </div>
@@ -59,4 +63,3 @@ const Index = () => {
 };
 
 export default Index;
-

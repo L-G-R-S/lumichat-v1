@@ -15,20 +15,6 @@ export interface Conversation {
   messages: Message[];
 }
 
-// Bot responses for simulation
-const botResponses = [
-  "Essa é uma excelente pergunta! Com base nas informações disponíveis, posso dizer que...",
-  "Existem várias maneiras de abordar essa questão. Primeiramente, é importante considerar que...",
-  "De acordo com as pesquisas mais recentes nessa área, os especialistas indicam que...",
-  "Essa é uma questão complexa que envolve diversos fatores. Vamos analisar cada um deles...",
-  "Entendo sua curiosidade sobre esse tema. A resposta curta é que depende do contexto, mas vou explicar em detalhes...",
-  "Ótima pergunta! Isso é um tema fascinante que tem recebido muita atenção ultimamente...",
-  "Do ponto de vista técnico, o processo funciona assim: primeiro, os dados são coletados e depois processados através de...",
-  "Historicamente, esse conceito evoluiu bastante ao longo do tempo. Inicialmente...",
-  "Existem prós e contras a serem considerados. Por um lado, temos os benefícios de... Por outro lado, os desafios incluem...",
-  "Vamos dividir isso em partes para facilitar o entendimento. Primeiro vamos falar sobre...",
-];
-
 // Helper function to generate unique IDs
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
@@ -37,6 +23,7 @@ export const useChat = () => {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [apiKey, setApiKey] = useState<string>(localStorage.getItem('perplexityApiKey') || '');
   const { toast } = useToast();
 
   const handleNewChat = () => {
@@ -60,7 +47,16 @@ export const useChat = () => {
     setActiveConversationId(null);
   };
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
+    if (!apiKey) {
+      toast({
+        title: "API Key necessária",
+        description: "Por favor, insira sua API key da Perplexity primeiro.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!activeConversationId) {
       const newId = generateId();
       const newConversation: Conversation = {
@@ -72,7 +68,6 @@ export const useChat = () => {
       setConversations((prev) => [newConversation, ...prev]);
       setActiveConversationId(newId);
       
-      // Add message after creating new chat
       setTimeout(() => {
         addMessageToConversation(newId, content);
       }, 0);
@@ -80,10 +75,10 @@ export const useChat = () => {
       return;
     }
     
-    addMessageToConversation(activeConversationId, content);
+    await addMessageToConversation(activeConversationId, content);
   };
 
-  const addMessageToConversation = (conversationId: string, content: string) => {
+  const addMessageToConversation = async (conversationId: string, content: string) => {
     const userMessage: Message = {
       id: generateId(),
       type: "user",
@@ -104,14 +99,43 @@ export const useChat = () => {
       })
     );
     
-    // Simulate bot response
     setIsLoading(true);
-    setTimeout(() => {
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+
+    try {
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-sonar-small-128k-online',
+          messages: [
+            {
+              role: 'system',
+              content: 'Você é um assistente prestativo e amigável. Responda em português do Brasil.'
+            },
+            {
+              role: 'user',
+              content
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro na API');
+      }
+
+      const data = await response.json();
+      const botResponse = data.choices[0].message.content;
+
       const botMessage: Message = {
         id: generateId(),
         type: "bot",
-        content: randomResponse,
+        content: botResponse,
       };
       
       setConversations((prev) =>
@@ -125,8 +149,15 @@ export const useChat = () => {
           return conv;
         })
       );
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível obter a resposta. Verifique sua API key.",
+        variant: "destructive"
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000 + Math.random() * 2000);
+    }
   };
 
   const toggleDarkMode = () => {
@@ -143,17 +174,28 @@ export const useChat = () => {
     });
   };
 
+  const updateApiKey = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem('perplexityApiKey', key);
+    toast({
+      title: "API Key atualizada",
+      description: "Sua API key foi salva com sucesso.",
+    });
+  };
+
   return {
     conversations,
     activeConversationId,
     isLoading,
     isDarkMode,
+    apiKey,
     activeConversation: conversations.find((conv) => conv.id === activeConversationId),
     handleNewChat,
     handleClearHistory,
     handleSendMessage,
     setActiveConversationId,
     toggleDarkMode,
+    updateApiKey,
   };
 };
 
