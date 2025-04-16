@@ -47,7 +47,11 @@ const LumiChat: React.FC = () => {
           </div>
         ) : (
           messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+            <ChatMessage 
+              key={message.id} 
+              content={message.content}
+              type={message.type}
+            />
           ))
         )}
         <div ref={messagesEndRef} />

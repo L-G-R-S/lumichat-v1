@@ -2,13 +2,7 @@
 import { useState, useCallback } from "react";
 import { streamChatResponse } from "@/services/cohereService";
 import { v4 as uuidv4 } from "uuid";
-
-export interface Message {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  pending?: boolean;
-}
+import { Message } from "@/types/chat";
 
 export const useCohere = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -22,7 +16,7 @@ export const useCohere = () => {
     const userMessage: Message = {
       id: userMessageId,
       content,
-      role: "user",
+      type: "user",
     };
 
     // Add temporary assistant message for streaming
@@ -30,8 +24,7 @@ export const useCohere = () => {
     const assistantMessage: Message = {
       id: assistantMessageId,
       content: "",
-      role: "assistant",
-      pending: true,
+      type: "bot",
     };
 
     setMessages((prevMessages) => [...prevMessages, userMessage, assistantMessage]);
@@ -56,7 +49,7 @@ export const useCohere = () => {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === assistantMessageId
-              ? { ...msg, pending: false, content: fullResponse }
+              ? { ...msg, content: fullResponse }
               : msg
           )
         );
