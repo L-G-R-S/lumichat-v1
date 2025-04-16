@@ -57,7 +57,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false 
 
   return (
     <div className="w-full max-w-4xl mx-auto mb-4 px-4">
-      <div className="chat-input-container flex items-end gap-2 p-2">
+      <div className="flex items-end gap-2 bg-background border rounded-lg shadow-sm p-2">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -70,7 +70,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false 
         <Textarea
           ref={textareaRef}
           placeholder="Como posso ajudar?"
-          className="chat-input min-h-[50px] max-h-[200px] border-0 focus-visible:ring-0 resize-none py-3"
+          className="min-h-[50px] max-h-[200px] border-0 focus-visible:ring-0 resize-none py-3"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
