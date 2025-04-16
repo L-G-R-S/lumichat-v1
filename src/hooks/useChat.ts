@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "./use-toast";
-import * as botpressService from "@/services/botpressService";
+import * as cohereService from "@/services/cohereService";
 import { useConversations } from "./useConversations";
 import { useMessageHandling } from "./useMessageHandling";
 import { useThemeToggle } from "./useThemeToggle";
@@ -36,34 +36,26 @@ export const useChat = () => {
 
   const { isDarkMode, toggleDarkMode } = useThemeToggle();
 
-  // Inicializar a conversa com Botpress quando o componente for montado
+  // Inicializar a conversa com a Cohere quando o componente for montado
   useEffect(() => {
-    const initializeBot = async () => {
+    const initializeAI = async () => {
       try {
-        await botpressService.initConversation();
-        console.log("Botpress inicializado com sucesso");
+        await cohereService.initConversation();
+        console.log("Serviço de IA inicializado com sucesso");
         setIsBotpressConnected(true);
       } catch (error) {
-        console.error("Falha ao inicializar o Botpress:", error);
+        console.error("Falha ao inicializar o serviço de IA:", error);
         setIsBotpressConnected(false);
         
-        if (error instanceof Error && error.message.includes('CORS')) {
-          toast({
-            title: "Erro de CORS Detectado",
-            description: "Não é possível conectar diretamente à API do Botpress do navegador. É necessário um proxy ou backend intermediário.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Falha na Conexão com o Bot",
-            description: "Verifique sua conexão com a internet e tente novamente.",
-            variant: "destructive"
-          });
-        }
+        toast({
+          title: "Falha na Conexão com o LumiChat",
+          description: "Verifique sua conexão com a internet e tente novamente.",
+          variant: "destructive"
+        });
       }
     };
     
-    initializeBot();
+    initializeAI();
   }, []);
 
   return {

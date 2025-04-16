@@ -104,7 +104,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false 
       </div>
       
       <p className="text-xs text-center text-muted-foreground mt-2">
-        LumiChat AI pode produzir informações incorretas.
+        LumiChat AI com tecnologia Cohere pode produzir informações incorretas.
       </p>
     </div>
   );

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Message } from "@/types/chat";
 import { generateId } from "@/utils/chatUtils";
 import { useToast } from "./use-toast";
-import * as botpressService from "@/services/botpressService";
+import * as cohereService from "@/services/cohereService";
 
 export const useMessageHandling = (
   activeConversationId: string | null,
@@ -11,7 +11,7 @@ export const useMessageHandling = (
   addMessageToConversation: (conversationId: string, message: Message) => void
 ) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isBotpressConnected, setIsBotpressConnected] = useState(true);
+  const [isAIConnected, setIsAIConnected] = useState(true);
   const { toast } = useToast();
 
   const sendMessage = async (content: string) => {
@@ -19,15 +19,15 @@ export const useMessageHandling = (
     if (!activeConversationId) {
       const newId = createNewConversation();
       setTimeout(() => {
-        handleSendMessageToBot(newId, content);
+        handleSendMessageToAI(newId, content);
       }, 0);
       return;
     }
     
-    await handleSendMessageToBot(activeConversationId, content);
+    await handleSendMessageToAI(activeConversationId, content);
   };
 
-  const handleSendMessageToBot = async (conversationId: string, content: string) => {
+  const handleSendMessageToAI = async (conversationId: string, content: string) => {
     // Add user message to the conversation
     const userMessage: Message = {
       id: generateId(),
@@ -40,18 +40,12 @@ export const useMessageHandling = (
     setIsLoading(true);
 
     try {
-      if (!isBotpressConnected) {
-        throw new Error("Botpress não está conectado");
+      if (!isAIConnected) {
+        throw new Error("Serviço de IA não está conectado");
       }
       
-      // Enviar mensagem para o Botpress
-      await botpressService.sendMessage(content);
-      
-      // Esperar um pouco para o Botpress processar
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Buscar a resposta do Botpress
-      const botResponse = await botpressService.fetchBotResponse();
+      // Enviar mensagem para a Cohere e obter resposta diretamente
+      const botResponse = await cohereService.sendMessage(content);
       
       const botMessage: Message = {
         id: generateId(),
@@ -61,12 +55,12 @@ export const useMessageHandling = (
       
       addMessageToConversation(conversationId, botMessage);
     } catch (error) {
-      console.error("Erro na comunicação com Botpress:", error);
+      console.error("Erro na comunicação com Cohere:", error);
       
       // Exibir toast de erro específico
       toast({
         title: "Erro de Comunicação",
-        description: "Não foi possível obter resposta do Botpress. Detalhes: " + 
+        description: "Não foi possível obter resposta da Cohere. Detalhes: " + 
                     (error instanceof Error ? error.message : "Erro desconhecido"),
         variant: "destructive"
       });
@@ -86,8 +80,8 @@ export const useMessageHandling = (
 
   return {
     isLoading,
-    isBotpressConnected,
-    setIsBotpressConnected,
+    isBotpressConnected: isAIConnected,
+    setIsBotpressConnected: setIsAIConnected,
     sendMessage
   };
 };

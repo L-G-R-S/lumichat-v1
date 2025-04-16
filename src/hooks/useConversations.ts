@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Conversation, Message } from "@/types/chat";
 import { generateId } from "@/utils/chatUtils";
 import { useToast } from "./use-toast";
-import * as botpressService from "@/services/botpressService";
+import * as cohereService from "@/services/cohereService";
 
 export const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -21,13 +21,13 @@ export const useConversations = () => {
     setConversations((prev) => [newConversation, ...prev]);
     setActiveConversationId(newId);
     
-    // Reiniciar a conversa com Botpress
-    botpressService.initConversation()
+    // Reiniciar a conversa com a Cohere
+    cohereService.initConversation()
       .then(() => {
         return true;
       })
       .catch(error => {
-        console.error("Falha ao inicializar nova conversa no Botpress:", error);
+        console.error("Falha ao inicializar nova conversa na Cohere:", error);
         return false;
       });
       
@@ -42,8 +42,8 @@ export const useConversations = () => {
     setConversations([]);
     setActiveConversationId(null);
     
-    // Reiniciar a conversa com Botpress
-    botpressService.initConversation()
+    // Reiniciar a conversa com a Cohere
+    cohereService.initConversation()
       .catch(error => {
         console.error("Falha ao reiniciar conversa após limpar histórico:", error);
       });

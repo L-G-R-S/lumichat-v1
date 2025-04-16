@@ -25,7 +25,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
       </h1>
       
       <p className="text-xl text-muted-foreground mb-8">
-        Sua assistente de IA para qualquer tipo de pergunta
+        Sua assistente de IA com Cohere para qualquer tipo de pergunta
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-8">
