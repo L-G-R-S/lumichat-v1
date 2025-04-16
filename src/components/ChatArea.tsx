@@ -24,15 +24,15 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
           {messages.map((message) => (
             <ChatMessage
               key={message.id}
-              content={message.content}
               type={message.type}
+              content={message.content}
             />
           ))}
           
           {isLoading && (
             <ChatMessage
-              content=""
               type="bot"
+              content=""
               isLoading={true}
             />
           )}

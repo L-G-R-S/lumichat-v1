@@ -5,12 +5,10 @@ import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "@/components/ui/button";
 import { Trash2, BrainCircuit } from "lucide-react";
-import WelcomeScreen from "./WelcomeScreen";
 
 const LumiChat: React.FC = () => {
   const { messages, isLoading, sendMessage, clearMessages } = useCohere();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const showWelcome = messages.length === 0;
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -39,17 +37,18 @@ const LumiChat: React.FC = () => {
       
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {showWelcome ? (
-          <WelcomeScreen onSampleQuestionClick={sendMessage} />
+        {messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <BrainCircuit className="h-12 w-12 mb-4 text-primary/60" />
+            <h2 className="text-xl font-medium mb-2">Bem-vindo à Lumi</h2>
+            <p className="max-w-md">
+              Olá! Eu sou a Lumi, sua assistente de IA. Como posso te ajudar hoje?
+            </p>
+          </div>
         ) : (
-          <>
-            {messages.map((message) => (
-              <ChatMessage 
-                key={message.id} 
-                message={message} 
-              />
-            ))}
-          </>
+          messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -59,7 +58,6 @@ const LumiChat: React.FC = () => {
         <ChatInput 
           onSendMessage={sendMessage} 
           isDisabled={isLoading} 
-          isLoading={isLoading}
         />
         <p className="text-xs text-center text-muted-foreground mt-2">
           LumiChat com tecnologia Cohere
