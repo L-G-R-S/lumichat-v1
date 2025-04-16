@@ -1,4 +1,3 @@
-
 /**
  * Cohere API service
  * Handles communication with the Cohere API for chat functionalities
@@ -6,6 +5,30 @@
 
 const COHERE_API_KEY = "GVzEDDuMb62mmw2WzFxtjDrY6aEDEavRdKtO2P4b";
 const API_URL = "https://api.cohere.ai/v1/generate";
+
+// Texto adicional com explicações sobre recursos extras
+const EXTRA_CONTEXT = `
+Excelente ponto, Higor!
+
+Sim, se no seu chat original (como esse mostrado na imagem) aparecem botões como:
+
+- 📎 **Anexar arquivos (.PDF, .TXT)**
+- 🧠 **Python Interpreter**
+- 🧮 **Calculator**
+- 🌐 **Web Search**
+
+Isso significa que esse sistema (provavelmente OpenAI Playground, Hugging Face ou outro custom) está com **recursos extras ativados** por trás — mas **isso não faz parte do Cohere diretamente**.
+
+## 🔎 Importante entender:
+A **API da Cohere** **não interpreta arquivos PDF, imagens ou faz busca na web nativamente**. Ela é uma API de **geração de texto pura**.
+
+Essas funções adicionais (como interpretar arquivos, rodar cálculos ou buscar na web) precisam ser implementadas no **backend do seu projeto**.
+`;
+
+// Função para adicionar o contexto extra ao prompt do usuário
+export function enhancePromptWithExtraContext(originalPrompt: string): string {
+  return `${EXTRA_CONTEXT}\n\nContexto original do usuário:\n${originalPrompt}`;
+}
 
 // Initialize a conversation
 export async function initConversation(): Promise<string> {
