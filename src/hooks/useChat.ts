@@ -23,7 +23,7 @@ export const useChat = () => {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [apiKey, setApiKey] = useState<string>(localStorage.getItem('perplexityApiKey') || '');
+  const [apiKey] = useState<string>('');
   const { toast } = useToast();
 
   const handleNewChat = () => {
@@ -48,15 +48,6 @@ export const useChat = () => {
   };
 
   const handleSendMessage = async (content: string) => {
-    if (!apiKey) {
-      toast({
-        title: "API Key necessária",
-        description: "Por favor, insira sua API key da Perplexity primeiro.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     if (!activeConversationId) {
       const newId = generateId();
       const newConversation: Conversation = {
@@ -102,60 +93,33 @@ export const useChat = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'system',
-              content: 'Você é um assistente prestativo e amigável. Responda em português do Brasil.'
-            },
-            {
-              role: 'user',
-              content
+      // Simulação de resposta, já que o Botpress estará lidando com as respostas reais
+      setTimeout(() => {
+        const botMessage: Message = {
+          id: generateId(),
+          type: "bot",
+          content: "Esta mensagem está sendo exibida apenas na interface. As respostas reais serão fornecidas pelo widget do Botpress no canto inferior direito da tela.",
+        };
+        
+        setConversations((prev) =>
+          prev.map((conv) => {
+            if (conv.id === conversationId) {
+              return {
+                ...conv,
+                messages: [...conv.messages, botMessage],
+              };
             }
-          ],
-          temperature: 0.7,
-          max_tokens: 1000,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro na API');
-      }
-
-      const data = await response.json();
-      const botResponse = data.choices[0].message.content;
-
-      const botMessage: Message = {
-        id: generateId(),
-        type: "bot",
-        content: botResponse,
-      };
-      
-      setConversations((prev) =>
-        prev.map((conv) => {
-          if (conv.id === conversationId) {
-            return {
-              ...conv,
-              messages: [...conv.messages, botMessage],
-            };
-          }
-          return conv;
-        })
-      );
+            return conv;
+          })
+        );
+        setIsLoading(false);
+      }, 1000);
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Não foi possível obter a resposta. Verifique sua API key.",
+        description: "Não foi possível obter a resposta.",
         variant: "destructive"
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -174,15 +138,6 @@ export const useChat = () => {
     });
   };
 
-  const updateApiKey = (key: string) => {
-    setApiKey(key);
-    localStorage.setItem('perplexityApiKey', key);
-    toast({
-      title: "API Key atualizada",
-      description: "Sua API key foi salva com sucesso.",
-    });
-  };
-
   return {
     conversations,
     activeConversationId,
@@ -195,7 +150,6 @@ export const useChat = () => {
     handleSendMessage,
     setActiveConversationId,
     toggleDarkMode,
-    updateApiKey,
+    updateApiKey: () => {},
   };
 };
-

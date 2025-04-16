@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,6 +16,9 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Script do WebChat da Botpress -->
+    <script src="https://cdn.botpress.cloud/webchat/v2.3/webchat.js"></script>
   </head>
 
   <body>
@@ -22,5 +26,21 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Inicialização do Botpress WebChat -->
+    <script>
+      window.botpressWebChat.init({
+        composerPlaceholder: "Digite sua pergunta...",
+        botId: "lumichat",
+        clientId: "ef6613e3-17b1-41ca-9b8c-9db703b123cc",
+        hostUrl: "https://cdn.botpress.cloud/webchat/v2.3",
+        messagingUrl: "https://messaging.botpress.cloud",
+        botName: "LumiChat",
+        avatarUrl: "https://cdn-icons-png.flaticon.com/512/4712/4712107.png",
+        themeName: "prism",
+        enableTranscriptDownload: false,
+        showPoweredBy: false
+      });
+    </script>
   </body>
 </html>
