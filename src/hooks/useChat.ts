@@ -10,7 +10,6 @@ import { Message, Conversation } from "@/types/chat";
 export type { Message, Conversation };
 
 export const useChat = () => {
-  const [apiKey] = useState<string>('');
   const { toast } = useToast();
 
   const {
@@ -64,7 +63,6 @@ export const useChat = () => {
     activeConversationId,
     isLoading,
     isDarkMode,
-    apiKey,
     isBotpressConnected,
     activeConversation,
     handleNewChat: createNewConversation,
@@ -73,6 +71,5 @@ export const useChat = () => {
     handleSendMessage: sendMessage,
     setActiveConversationId,
     toggleDarkMode,
-    updateApiKey: () => {},
   };
 };

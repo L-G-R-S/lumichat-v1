@@ -1,13 +1,18 @@
 
 import React, { useRef, useEffect } from "react";
-import { useCohere } from "@/hooks/useCohere";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "@/components/ui/button";
 import { Trash2, BrainCircuit } from "lucide-react";
+import { Message } from "@/types/chat";
 
-const LumiChat: React.FC = () => {
-  const { messages, isLoading, sendMessage, clearMessages } = useCohere();
+interface LumiChatProps {
+  messages: Message[];
+  isLoading: boolean;
+  onSendMessage: (content: string) => void;
+}
+
+const LumiChat: React.FC<LumiChatProps> = ({ messages, isLoading, onSendMessage }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -16,23 +21,13 @@ const LumiChat: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full max-w-3xl mx-auto">
+    <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
           <BrainCircuit className="h-6 w-6 text-primary" />
           <h1 className="text-xl font-semibold">LumiChat</h1>
         </div>
-        
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={clearMessages}
-          disabled={messages.length === 0 || isLoading}
-        >
-          <Trash2 className="h-4 w-4 mr-2" />
-          Limpar conversa
-        </Button>
       </div>
       
       {/* Messages Container */}
@@ -60,7 +55,7 @@ const LumiChat: React.FC = () => {
       {/* Input Area */}
       <div className="p-4 border-t">
         <ChatInput 
-          onSendMessage={sendMessage} 
+          onSendMessage={onSendMessage} 
           isDisabled={isLoading} 
         />
         <p className="text-xs text-center text-muted-foreground mt-2">
