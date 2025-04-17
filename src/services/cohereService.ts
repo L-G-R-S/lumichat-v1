@@ -7,8 +7,21 @@ const client = new CohereClient({
   token: COHERE_API_KEY,
 });
 
+// Define the types as expected by Cohere API
+type UserMessage = {
+  role: "USER";
+  message: string;
+};
+
+type ChatbotMessage = {
+  role: "CHATBOT";
+  message: string;
+};
+
+type Message = UserMessage | ChatbotMessage;
+
 // Store conversation chat history
-let chatHistory: { role: string; message: string }[] = [];
+let chatHistory: Message[] = [];
 
 // System preamble
 const systemPreamble = `Você é o Lumichat, um assistente inteligente e simpático. 
