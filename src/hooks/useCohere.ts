@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { streamChatResponse } from "@/services/cohereService";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 export interface Message {
   id: string;
@@ -67,11 +68,14 @@ export const useCohere = () => {
     } catch (error) {
       console.error("Erro ao comunicar com a API da Cohere:", error);
       
+      // Get error message
+      let errorMessage = "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua conexão e tente novamente.";
+      
       // Update the assistant message with error
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === assistantMessageId
-            ? { ...msg, pending: false, content: "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua conexão e tente novamente." }
+            ? { ...msg, pending: false, content: errorMessage }
             : msg
         )
       );

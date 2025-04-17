@@ -1,68 +1,69 @@
 
-import { CohereClientV2 } from "cohere-ai";
+import { CohereClient, CohereError, CohereTimeoutError } from "cohere-ai";
 
-// Using the new API key from your example
+// Using the API key
 const COHERE_API_KEY = "phPQaSdkrQWbgvYxBfJfVS15GRBrMkUTgyHQmIXq";
-const client = new CohereClientV2({
+const client = new CohereClient({
   token: COHERE_API_KEY,
 });
 
-// Store conversation context
-let conversationContext: { role: string; content: string }[] = [];
+// Store conversation chat history
+let chatHistory: { role: "USER" | "CHATBOT"; message: string }[] = [];
+
+// System preamble
+const systemPreamble = `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
+Seu nome é Lumi e não Command. Nunca se identifique como Command. 
+Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
+
+Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
+Responda sempre com empatia e profissionalismo.`;
 
 // Initialize a new conversation
 export const initConversation = async () => {
-  // Reset conversation context
-  conversationContext = [];
+  // Reset conversation history
+  chatHistory = [];
   return true;
 };
 
 // Send a message and get a response
 export const sendMessage = async (userMessage: string): Promise<string> => {
   try {
-    // Add user message to context
-    const userMsg = {
-      role: "user",
-      content: userMessage,
-    };
-    
-    // Create full message array with system prompt and context
-    const messages = [
-      {
-        role: "system",
-        content: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
-        Seu nome é Lumi e não Command. Nunca se identifique como Command. 
-        Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
-
-        Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
-        Responda sempre com empatia e profissionalismo.`
-      },
-      ...conversationContext,
-      userMsg
-    ];
-    
-    // Add to context for future messages
-    conversationContext.push(userMsg);
-    
-    // Get response from Cohere using the new V2 client
-    const response = await client.chat({
-      model: "command-a-03-2025",
-      temperature: 0.3,
-      messages: messages,
+    // Add user message to chat history
+    chatHistory.push({
+      role: "USER",
+      message: userMessage,
     });
     
-    // Add assistant response to context
+    // Get response from Cohere
+    const response = await client.chat({
+      model: "command",
+      temperature: 0.3,
+      message: userMessage,
+      preamble: systemPreamble,
+      chatHistory: chatHistory,
+    });
+    
+    // Add assistant response to chat history
     if (response.text) {
-      const assistantMsg = {
-        role: "assistant", 
-        content: response.text
-      };
-      conversationContext.push(assistantMsg);
+      chatHistory.push({
+        role: "CHATBOT", 
+        message: response.text
+      });
     }
     
     return response.text || "Desculpe, não consegui processar sua solicitação.";
   } catch (error) {
     console.error("Erro ao comunicar com a API da Cohere:", error);
+    
+    // Handle specific Cohere errors
+    if (error instanceof CohereTimeoutError) {
+      console.error("Erro de timeout:", error);
+      return "A solicitação expirou. Por favor, tente novamente.";
+    } else if (error instanceof CohereError) {
+      console.error(`Erro Cohere (${error.statusCode}):`, error.message);
+      return `Erro na API da Cohere: ${error.message}`;
+    }
+    
     throw error;
   }
 };
@@ -73,33 +74,19 @@ export const streamChatResponse = async (
   onComplete: () => void
 ) => {
   try {
-    // Add user message to context
-    const userMsg = {
-      role: "user",
-      content: userMessage,
-    };
+    // Add user message to chat history
+    chatHistory.push({
+      role: "USER",
+      message: userMessage,
+    });
     
-    // Add to context for future messages
-    conversationContext.push(userMsg);
-    
-    // Create full message array with system prompt and context
-    const messages = [
-      {
-        role: "system",
-        content: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
-        Seu nome é Lumi e não Command. Nunca se identifique como Command. 
-        Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
-
-        Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
-        Responda sempre com empatia e profissionalismo.`
-      },
-      ...conversationContext
-    ];
-
+    // Start streaming response
     const stream = await client.chatStream({
-      model: "command-a-03-2025",
+      model: "command",
       temperature: 0.3,
-      messages: messages,
+      message: userMessage,
+      preamble: systemPreamble,
+      chatHistory: chatHistory,
     });
 
     let fullResponse = "";
@@ -111,17 +98,25 @@ export const streamChatResponse = async (
       }
     }
     
-    // Add assistant response to context after stream completes
-    const assistantMsg = {
-      role: "assistant", 
-      content: fullResponse
-    };
-    conversationContext.push(assistantMsg);
+    // Add assistant response to chat history after stream completes
+    chatHistory.push({
+      role: "CHATBOT", 
+      message: fullResponse
+    });
     
     onComplete();
   } catch (error) {
     console.error("Erro ao comunicar com a API da Cohere:", error);
-    onMessageChunk("\n\nOcorreu um erro ao comunicar com a Lumi. Por favor, tente novamente.");
+    
+    // Handle specific Cohere errors
+    if (error instanceof CohereTimeoutError) {
+      onMessageChunk("\n\nA solicitação expirou. Por favor, tente novamente.");
+    } else if (error instanceof CohereError) {
+      onMessageChunk(`\n\nErro na API da Cohere: ${error.message}`);
+    } else {
+      onMessageChunk("\n\nOcorreu um erro ao comunicar com a Lumi. Por favor, tente novamente.");
+    }
+    
     onComplete();
   }
 };
