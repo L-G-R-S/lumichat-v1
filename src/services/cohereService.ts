@@ -1,15 +1,14 @@
 
-import { CohereClient } from "cohere-ai";
+import { CohereClientV2 } from "cohere-ai";
 
-// Using the API key as provided in the sample code
-// In a production environment, this should be stored securely
-const COHERE_API_KEY = "GVzEDDuMb62mmw2WzFxtjDrY6aEDEavRdKtO2P4b";
-const client = new CohereClient({
+// Using the new API key from your example
+const COHERE_API_KEY = "phPQaSdkrQWbgvYxBfJfVS15GRBrMkUTgyHQmIXq";
+const client = new CohereClientV2({
   token: COHERE_API_KEY,
 });
 
 // Store conversation context
-let conversationContext: any[] = [];
+let conversationContext: { role: string; content: string }[] = [];
 
 // Initialize a new conversation
 export const initConversation = async () => {
@@ -23,15 +22,15 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
   try {
     // Add user message to context
     const userMsg = {
-      role: "USER",
-      message: userMessage,
+      role: "user",
+      content: userMessage,
     };
     
     // Create full message array with system prompt and context
     const messages = [
       {
-        role: "SYSTEM",
-        message: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
+        role: "system",
+        content: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
         Seu nome é Lumi e não Command. Nunca se identifique como Command. 
         Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
 
@@ -45,29 +44,21 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
     // Add to context for future messages
     conversationContext.push(userMsg);
     
-    // Get response from Cohere
+    // Get response from Cohere using the new V2 client
     const response = await client.chat({
-      model: "command-r",
+      model: "command-a-03-2025",
       temperature: 0.3,
-      message: userMessage,
-      preamble: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
-      Seu nome é Lumi e não Command. Nunca se identifique como Command. 
-      Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
-
-      Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
-      Responda sempre com empatia e profissionalismo.`,
-      chatHistory: conversationContext.map(msg => ({
-        role: msg.role,
-        message: msg.message
-      }))
+      messages: messages,
     });
     
     // Add assistant response to context
-    const assistantMsg = {
-      role: "ASSISTANT", 
-      message: response.text
-    };
-    conversationContext.push(assistantMsg);
+    if (response.text) {
+      const assistantMsg = {
+        role: "assistant", 
+        content: response.text
+      };
+      conversationContext.push(assistantMsg);
+    }
     
     return response.text || "Desculpe, não consegui processar sua solicitação.";
   } catch (error) {
@@ -84,42 +75,46 @@ export const streamChatResponse = async (
   try {
     // Add user message to context
     const userMsg = {
-      role: "USER",
-      message: userMessage,
+      role: "user",
+      content: userMessage,
     };
     
     // Add to context for future messages
     conversationContext.push(userMsg);
     
-    const stream = await client.chatStream({
-      model: "command-r",
-      temperature: 0.3,
-      message: userMessage,
-      preamble: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
-      Seu nome é Lumi e não Command. Nunca se identifique como Command. 
-      Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
+    // Create full message array with system prompt and context
+    const messages = [
+      {
+        role: "system",
+        content: `Você é a Lumi, uma assistente virtual criada por Luis Guilherme. 
+        Seu nome é Lumi e não Command. Nunca se identifique como Command. 
+        Sempre se apresente como Lumi, com personalidade educada, clara e em português brasileiro.
 
-      Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
-      Responda sempre com empatia e profissionalismo.`,
-      chatHistory: conversationContext.map(msg => ({
-        role: msg.role,
-        message: msg.message
-      }))
+        Quando alguém perguntar seu nome, diga: "Meu nome é Lumi, sou sua assistente de inteligência artificial. Como posso te ajudar?"
+        Responda sempre com empatia e profissionalismo.`
+      },
+      ...conversationContext
+    ];
+
+    const stream = await client.chatStream({
+      model: "command-a-03-2025",
+      temperature: 0.3,
+      messages: messages,
     });
 
     let fullResponse = "";
 
-    for await (const chunk of stream) {
-      if (chunk.eventType === "text-generation") {
-        onMessageChunk(chunk.text || "");
-        fullResponse += chunk.text || "";
+    for await (const message of stream) {
+      if (message.eventType === "text-generation") {
+        onMessageChunk(message.text || "");
+        fullResponse += message.text || "";
       }
     }
     
     // Add assistant response to context after stream completes
     const assistantMsg = {
-      role: "ASSISTANT", 
-      message: fullResponse
+      role: "assistant", 
+      content: fullResponse
     };
     conversationContext.push(assistantMsg);
     

@@ -71,16 +71,24 @@ export const useCohere = () => {
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === assistantMessageId
-            ? { ...msg, pending: false, content: "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua API key e tente novamente." }
+            ? { ...msg, pending: false, content: "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua conexão e tente novamente." }
             : msg
         )
       );
       setIsLoading(false);
+      
+      // Show toast with error
+      toast("Erro de conexão", {
+        description: "Não foi possível conectar à API da Cohere.",
+      });
     }
   }, []);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
+    toast("Conversa limpa", {
+      description: "Todas as mensagens foram removidas.",
+    });
   }, []);
 
   return {
