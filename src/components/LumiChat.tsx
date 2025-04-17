@@ -6,7 +6,7 @@ import ChatInput from "./ChatInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, BrainCircuit, Key } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const LumiChat: React.FC = () => {
   const { messages, isLoading, apiKey, sendMessage, clearMessages, updateApiKey } = usePerplexity();
@@ -27,8 +27,7 @@ const LumiChat: React.FC = () => {
       updateApiKey(initialKey);
       setInputApiKey(initialKey);
       
-      toast({
-        title: "API Key configurada",
+      toast("API Key configurada", {
         description: "API Key da Perplexity foi configurada automaticamente.",
       });
     }
@@ -37,8 +36,7 @@ const LumiChat: React.FC = () => {
   const handleSaveApiKey = () => {
     updateApiKey(inputApiKey);
     setShowApiKeyInput(false);
-    toast({
-      title: "API Key atualizada",
+    toast("API Key atualizada", {
       description: "Sua API Key foi atualizada com sucesso.",
     });
   };
