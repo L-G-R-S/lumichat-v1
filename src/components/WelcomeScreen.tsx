@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bot, Search, Lightbulb, Sparkles, MessageSquare, Book, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 max-w-3xl mx-auto text-center">
+    <div className="flex flex-col items-center justify-center px-4 py-12 max-w-3xl mx-auto text-center pb-[200px]">
       <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6 shadow-sm">
         <Bot className="h-8 w-8 text-primary" />
       </div>
