@@ -44,7 +44,7 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
             />
           )}
 
-          <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} className="h-24" /> {/* Adiciona um espaço extra para evitar sobreposição */}
         </div>
       )}
       
