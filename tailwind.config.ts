@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -100,6 +101,10 @@ export default {
 				'pulse-light': {
 					'0%, 100%': { opacity: '0.6' },
 					'50%': { opacity: '0.3' }
+				},
+				'slide-in-from-bottom': {
+					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
 				}
 			},
 			animation: {
@@ -108,7 +113,8 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'typing': 'typing 2s steps(40, end)',
 				'blink': 'blink 1s step-end infinite',
-				'pulse-light': 'pulse-light 1.5s ease-in-out infinite'
+				'pulse-light': 'pulse-light 1.5s ease-in-out infinite',
+				'slide-in-from-bottom-3': 'slide-in-from-bottom 0.3s ease-out'
 			},
 			boxShadow: {
 				'subtle': '0 2px 10px rgba(0, 0, 0, 0.05)',

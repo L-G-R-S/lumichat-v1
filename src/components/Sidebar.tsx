@@ -1,10 +1,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon, X } from "lucide-react";
+import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon, X, Plus, History, InfoIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -37,6 +38,7 @@ const Sidebar = ({
     e.stopPropagation(); // Prevents triggering the conversation selection
     if (onDeleteConversation) {
       onDeleteConversation(id);
+      toast.success("Conversa excluída com sucesso");
     }
   };
 
@@ -56,26 +58,37 @@ const Sidebar = ({
       </Button>
 
       {/* Main sidebar content */}
-      <div className={`h-full bg-sidebar border-r overflow-hidden ${
-        isActuallyCollapsed ? "-translate-x-full" : "translate-x-0"
-      } transition-transform duration-300`}>
+      <div 
+        className={cn(
+          "h-full bg-sidebar border-r overflow-hidden",
+          isActuallyCollapsed ? "-translate-x-full" : "translate-x-0",
+          "transition-transform duration-300 ease-in-out"
+        )}
+      >
         <div className="flex flex-col h-full p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Bot className="h-6 w-6 text-primary" />
+          <div className="flex items-center gap-2 mb-6 px-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+              <Bot className="h-5 w-5 text-primary" />
+            </div>
             <h1 className="text-xl font-semibold text-foreground">LumiChat</h1>
           </div>
 
           <Button 
             onClick={onNewChat} 
-            className="mb-4"
+            className="mb-6 gap-2 shadow-sm"
             variant="default"
           >
-            <MessageSquarePlus className="mr-2 h-4 w-4" />
+            <Plus className="h-4 w-4" />
             Nova Conversa
           </Button>
 
           {conversations.length > 0 && (
-            <div className="flex-1 overflow-y-auto mb-4 space-y-1">
+            <div className="flex-1 overflow-y-auto mb-4 space-y-1 pr-1">
+              <div className="flex items-center mb-2 px-2">
+                <History className="h-4 w-4 text-muted-foreground mr-2" />
+                <span className="text-xs font-medium text-muted-foreground">Histórico de conversas</span>
+              </div>
+              
               {conversations.map((conversation) => (
                 <div 
                   key={conversation.id}
@@ -83,7 +96,10 @@ const Sidebar = ({
                 >
                   <Button
                     variant={activeConversation === conversation.id ? "secondary" : "ghost"}
-                    className="w-full justify-start text-sm font-normal truncate pr-8 relative"
+                    className={cn(
+                      "w-full justify-start text-sm font-normal truncate pr-8 relative",
+                      activeConversation === conversation.id ? "bg-secondary/80" : "hover:bg-secondary/40"
+                    )}
                     onClick={() => onSelectConversation(conversation.id)}
                   >
                     <MessageSquarePlus className="mr-2 h-4 w-4 shrink-0" />
@@ -97,7 +113,7 @@ const Sidebar = ({
                         onClick={(e) => handleDeleteClick(e, conversation.id)}
                         aria-label="Excluir conversa"
                       >
-                        <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                        <X className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
                       </Button>
                     )}
                   </Button>
@@ -106,9 +122,9 @@ const Sidebar = ({
             </div>
           )}
 
-          <Separator className="mb-4" />
+          <Separator className="my-4" />
           
-          <div className="space-y-2">
+          <div className="space-y-1">
             <Button 
               variant="ghost" 
               size="sm" 
@@ -140,12 +156,28 @@ const Sidebar = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/10"
+              className="w-full justify-start mb-2"
+            >
+              <InfoIcon className="mr-2 h-4 w-4" />
+              <span>Sobre o LumiChat</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/10"
               onClick={onClearHistory}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               <span>Limpar Histórico</span>
             </Button>
+          </div>
+          
+          <div className="mt-auto pt-4">
+            <div className="text-xs text-muted-foreground text-center">
+              <p>LumiChat v1.0</p>
+              <p className="mt-1">© 2025 Luis Guilherme</p>
+            </div>
           </div>
         </div>
       </div>

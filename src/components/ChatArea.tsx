@@ -1,5 +1,6 @@
 
 import { Message } from "@/hooks/useChat";
+import { useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import WelcomeScreen from "./WelcomeScreen";
@@ -14,32 +15,40 @@ interface ChatAreaProps {
 
 const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
   const showWelcome = messages.length === 0;
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
 
   return (
     <div className="flex-1 flex flex-col overflow-auto min-h-screen">
       {showWelcome ? (
         <WelcomeScreen onSampleQuestionClick={onSendMessage} />
       ) : (
-        <div className="flex-1 pt-4 pb-32 overflow-auto">
+        <div className="flex-1 pt-6 pb-32 overflow-auto">
           {messages.map((message) => (
             <ChatMessage
               key={message.id}
-              content={message.content}
               type={message.type}
+              content={message.content}
             />
           ))}
           
           {isLoading && (
             <ChatMessage
-              content=""
               type="bot"
+              content=""
               isLoading={true}
             />
           )}
+
+          <div ref={messagesEndRef} />
         </div>
       )}
       
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm pt-4 pb-4 lg:pl-[280px]">
+      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-4 pb-6 lg:pl-[280px] border-t border-border/50">
         <ChatInput
           onSendMessage={onSendMessage}
           isLoading={isLoading}
