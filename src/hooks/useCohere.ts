@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from "react";
-import { streamChatResponse } from "@/services/cohereService";
+import { streamChatResponse, trimChatHistory } from "@/services/cohereService";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { CohereError, CohereTimeoutError } from "cohere-ai";
@@ -38,6 +38,9 @@ export const useCohere = () => {
 
     setMessages((prevMessages) => [...prevMessages, userMessage, assistantMessage]);
     setIsLoading(true);
+
+    // Limitar o histórico para melhorar a performance
+    trimChatHistory();
 
     // Stream the response
     let fullResponse = "";

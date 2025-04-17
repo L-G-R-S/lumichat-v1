@@ -23,11 +23,9 @@ type Message = UserMessage | ChatbotMessage;
 // Store conversation chat history
 let chatHistory: Message[] = [];
 
-// System preamble
-const systemPreamble = `Você é o Lumichat, um assistente inteligente e simpático. 
-Você foi criado por Luis Guilherme. Seu objetivo é ajudar os usuários com respostas claras, 
-úteis e sempre com um toque amigável. Use uma linguagem acessível, e sempre que possível, 
-seja acolhedor e proativo.`;
+// System preamble - tornando mais conciso para acelerar o processamento
+const systemPreamble = `Você é o Lumichat, um assistente simpático criado por Luis Guilherme. 
+Seja conciso e direto nas respostas.`;
 
 // Initialize a new conversation
 export const initConversation = async () => {
@@ -39,13 +37,14 @@ export const initConversation = async () => {
 // Send a message and get a response
 export const sendMessage = async (userMessage: string): Promise<string> => {
   try {
-    // Get response from Cohere
+    // Get response from Cohere with lower temperature para respostas mais rápidas
     const response = await client.chat({
       model: "command-a-03-2025",
-      temperature: 0.3,
+      temperature: 0.2, // Reduzido para respostas mais determinísticas e rápidas
       message: userMessage,
       preamble: systemPreamble,
       chatHistory: chatHistory.length > 0 ? chatHistory : undefined,
+      maxTokens: 500, // Limitando o tamanho da resposta para maior velocidade
     });
     
     // Add messages to chat history
@@ -74,13 +73,14 @@ export const streamChatResponse = async (
   onComplete: () => void
 ) => {
   try {
-    // Start streaming response
+    // Start streaming response com configurações otimizadas
     const stream = await client.chatStream({
       model: "command-a-03-2025",
-      temperature: 0.3,
+      temperature: 0.2, // Reduzido para respostas mais rápidas
       message: userMessage,
       preamble: systemPreamble,
       chatHistory: chatHistory.length > 0 ? chatHistory : undefined,
+      maxTokens: 500, // Limitando o tamanho para maior velocidade
     });
 
     let fullResponse = "";
@@ -110,3 +110,12 @@ export const streamChatResponse = async (
     throw error;
   }
 };
+
+// Adicionar função para limitar histórico de chat (evita excesso de tokens)
+export const trimChatHistory = () => {
+  // Manter apenas as últimas 6 mensagens (3 interações) para manter o contexto essencial
+  if (chatHistory.length > 6) {
+    chatHistory = chatHistory.slice(chatHistory.length - 6);
+  }
+};
+
