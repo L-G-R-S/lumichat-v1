@@ -1,7 +1,7 @@
 
 import { CohereClient } from "cohere-ai";
 
-// Using the same API key as provided in the sample code
+// Using the API key as provided in the sample code
 // In a production environment, this should be stored securely
 const COHERE_API_KEY = "GVzEDDuMb62mmw2WzFxtjDrY6aEDEavRdKtO2P4b";
 const client = new CohereClient({
@@ -82,6 +82,15 @@ export const streamChatResponse = async (
   onComplete: () => void
 ) => {
   try {
+    // Add user message to context
+    const userMsg = {
+      role: "USER",
+      message: userMessage,
+    };
+    
+    // Add to context for future messages
+    conversationContext.push(userMsg);
+    
     const stream = await client.chatStream({
       model: "command-r",
       temperature: 0.3,
@@ -98,11 +107,21 @@ export const streamChatResponse = async (
       }))
     });
 
+    let fullResponse = "";
+
     for await (const chunk of stream) {
       if (chunk.eventType === "text-generation") {
         onMessageChunk(chunk.text || "");
+        fullResponse += chunk.text || "";
       }
     }
+    
+    // Add assistant response to context after stream completes
+    const assistantMsg = {
+      role: "ASSISTANT", 
+      message: fullResponse
+    };
+    conversationContext.push(assistantMsg);
     
     onComplete();
   } catch (error) {

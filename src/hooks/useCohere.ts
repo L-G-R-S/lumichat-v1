@@ -39,30 +39,44 @@ export const useCohere = () => {
 
     // Stream the response
     let fullResponse = "";
-    await streamChatResponse(
-      content,
-      (chunk) => {
-        fullResponse += chunk;
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            msg.id === assistantMessageId
-              ? { ...msg, content: fullResponse }
-              : msg
-          )
-        );
-      },
-      () => {
-        // Complete the message when finished
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            msg.id === assistantMessageId
-              ? { ...msg, pending: false, content: fullResponse }
-              : msg
-          )
-        );
-        setIsLoading(false);
-      }
-    );
+    try {
+      await streamChatResponse(
+        content,
+        (chunk) => {
+          fullResponse += chunk;
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: fullResponse }
+                : msg
+            )
+          );
+        },
+        () => {
+          // Complete the message when finished
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, pending: false, content: fullResponse }
+                : msg
+            )
+          );
+          setIsLoading(false);
+        }
+      );
+    } catch (error) {
+      console.error("Erro ao comunicar com a API da Cohere:", error);
+      
+      // Update the assistant message with error
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, pending: false, content: "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua API key e tente novamente." }
+            : msg
+        )
+      );
+      setIsLoading(false);
+    }
   }, []);
 
   const clearMessages = useCallback(() => {
