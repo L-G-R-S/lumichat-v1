@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { streamChatResponse } from "@/services/cohereService";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import { CohereError, CohereTimeoutError } from "cohere-ai";
 
 export interface Message {
   id: string;
@@ -68,8 +69,24 @@ export const useCohere = () => {
     } catch (error) {
       console.error("Erro ao comunicar com a API da Cohere:", error);
       
-      // Get error message
-      let errorMessage = "Ocorreu um erro ao comunicar com a Lumi. Por favor, verifique sua conexão e tente novamente.";
+      // Get error message based on error type
+      let errorMessage = "Ocorreu um erro ao comunicar com o Lumichat. Por favor, tente novamente.";
+      
+      if (error instanceof CohereTimeoutError) {
+        errorMessage = "A solicitação expirou. Por favor, tente novamente mais tarde.";
+        toast.error("Tempo limite excedido", {
+          description: "A solicitação para a API da Cohere expirou.",
+        });
+      } else if (error instanceof CohereError) {
+        errorMessage = `Erro na API da Cohere: ${error.message}`;
+        toast.error(`Erro (${error.statusCode || 'desconhecido'})`, {
+          description: error.message,
+        });
+      } else {
+        toast.error("Erro de conexão", {
+          description: "Não foi possível conectar à API da Cohere.",
+        });
+      }
       
       // Update the assistant message with error
       setMessages((prevMessages) =>
@@ -80,17 +97,12 @@ export const useCohere = () => {
         )
       );
       setIsLoading(false);
-      
-      // Show toast with error
-      toast("Erro de conexão", {
-        description: "Não foi possível conectar à API da Cohere.",
-      });
     }
   }, []);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
-    toast("Conversa limpa", {
+    toast.success("Conversa limpa", {
       description: "Todas as mensagens foram removidas.",
     });
   }, []);

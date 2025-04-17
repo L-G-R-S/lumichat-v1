@@ -4,6 +4,8 @@ import { Message } from "@/types/chat";
 import { generateId } from "@/utils/chatUtils";
 import { useToast } from "./use-toast";
 import * as cohereService from "@/services/cohereService";
+import { toast } from "sonner";
+import { CohereError, CohereTimeoutError } from "cohere-ai";
 
 export const useMessageHandling = (
   activeConversationId: string | null,
@@ -12,7 +14,7 @@ export const useMessageHandling = (
 ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAIConnected, setIsAIConnected] = useState(true);
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
 
   const sendMessage = async (content: string) => {
     // If there's no active conversation, create one
@@ -57,12 +59,20 @@ export const useMessageHandling = (
     } catch (error) {
       console.error("Erro na comunicação com Cohere:", error);
       
-      // Exibir toast de erro específico
-      toast({
-        title: "Erro de Comunicação",
-        description: "Não foi possível obter resposta da Cohere. Detalhes: " + 
-                    (error instanceof Error ? error.message : "Erro desconhecido"),
-        variant: "destructive"
+      // Preparar mensagem de erro apropriada
+      let errorDescription = "Erro desconhecido";
+      
+      if (error instanceof CohereTimeoutError) {
+        errorDescription = "A solicitação para a API da Cohere expirou.";
+      } else if (error instanceof CohereError) {
+        errorDescription = `Erro ${error.statusCode}: ${error.message}`;
+      } else if (error instanceof Error) {
+        errorDescription = error.message;
+      }
+      
+      // Exibir toast de erro
+      toast.error("Erro de Comunicação", {
+        description: `Não foi possível obter resposta da Cohere. ${errorDescription}`
       });
       
       // Adicionar mensagem de erro como resposta do bot
