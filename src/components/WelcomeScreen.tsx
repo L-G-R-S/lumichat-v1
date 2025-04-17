@@ -12,9 +12,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
     "Explique como funcionam os buracos negros",
     "Quais são os benefícios da meditação diária?",
     "Crie uma lista de exercícios para melhorar a postura",
-    "Quais são as tendências de tecnologia para 2025?",
-    "Quais etapas devo seguir para aprender programação?",
-    "Explique o conceito de inteligência artificial generativa"
+    "Quais são as tendências de tecnologia para 2025?"
   ];
 
   return (
@@ -62,3 +60,4 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
 };
 
 export default WelcomeScreen;
+
