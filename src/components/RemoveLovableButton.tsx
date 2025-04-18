@@ -30,8 +30,10 @@ const RemoveLovableButton = () => {
             if (el && el.parentNode) {
               el.parentNode.removeChild(el);
             } else if (el) {
-              // Alternative: just hide the element if we can't remove it safely
-              el.style.display = 'none';
+              // Check if element is HTMLElement before accessing style
+              if (el instanceof HTMLElement) {
+                el.style.display = 'none';
+              }
             }
           });
         } catch (error) {
@@ -47,7 +49,10 @@ const RemoveLovableButton = () => {
             if (iframe.parentNode) {
               iframe.parentNode.removeChild(iframe);
             } else {
-              iframe.style.display = 'none';
+              // Iframes are always HTMLElements, but we'll check to be safe
+              if (iframe instanceof HTMLElement) {
+                iframe.style.display = 'none';
+              }
             }
           }
         } catch (error) {
