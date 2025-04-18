@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthSidebar } from "@/components/auth/AuthSidebar";
 import { AuthForm } from "@/components/auth/AuthForm";
-
-type AuthMode = 'login' | 'signup' | 'reset';
+import { AuthFooter } from "@/components/auth/AuthFooter";
+import { AuthModeSwitcher } from "@/components/auth/AuthModeSwitcher";
+import { AuthMode } from "@/components/auth/types";
 
 const Auth: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>('login');
@@ -97,61 +97,8 @@ const Auth: React.FC = () => {
             onSubmit={mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handlePasswordReset}
           />
 
-          <div className="space-y-4 text-center text-sm">
-            {mode === 'login' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setMode('reset')}
-                  className="text-sm text-primary hover:underline"
-                >
-                  Esqueceu sua senha?
-                </button>
-                <div>
-                  Não tem uma conta?{" "}
-                  <button
-                    type="button"
-                    onClick={() => setMode('signup')}
-                    className="text-primary hover:underline font-medium"
-                  >
-                    Cadastre-se
-                  </button>
-                </div>
-              </>
-            )}
-
-            {mode === 'signup' && (
-              <div>
-                Já tem uma conta?{" "}
-                <button
-                  type="button"
-                  onClick={() => setMode('login')}
-                  className="text-primary hover:underline font-medium"
-                >
-                  Entrar
-                </button>
-              </div>
-            )}
-
-            {mode === 'reset' && (
-              <button
-                type="button"
-                onClick={() => setMode('login')}
-                className="text-primary hover:underline font-medium"
-              >
-                Voltar para login
-              </button>
-            )}
-          </div>
-
-          <div className="text-center text-xs text-muted-foreground">
-            © 2025 LumiChat. Todos os direitos reservados.
-            <div className="mt-1 space-x-1">
-              <a href="#" className="hover:underline">Termos de Uso</a>
-              <span>·</span>
-              <a href="#" className="hover:underline">Política de Privacidade</a>
-            </div>
-          </div>
+          <AuthModeSwitcher mode={mode} setMode={setMode} />
+          <AuthFooter />
         </div>
       </div>
     </div>
