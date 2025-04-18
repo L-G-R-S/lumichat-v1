@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bot, User, Copy, CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,7 +29,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
   };
 
   const renderContent = () => {
-    // Check if content is an image (base64 or URL)
     if (content.includes('[Imagem enviada]')) {
       const imageData = content.split('[Imagem enviada] ')[1];
       return (
@@ -44,7 +42,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       );
     }
 
-    // Check if content is a file
     if (content.includes('[Arquivo enviado]')) {
       const fileContent = content.split('\n\nConteúdo:\n')[1];
       return (
@@ -57,7 +54,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       );
     }
 
-    // Default text content
     return (
       <div className="prose prose-sm dark:prose-invert max-w-none break-words">
         <ReactMarkdown 
@@ -72,7 +68,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       </div>
     );
   };
-  
+
   return (
     <div 
       className={cn(
@@ -113,7 +109,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
               variant="ghost"
               className={cn(
                 "absolute bottom-2 right-2 opacity-70 hover:opacity-100 transition-opacity",
-                "ml-4", // Added margin to create spacing
+                "ml-4",
                 copied && "text-green-500"
               )}
               onClick={copyToClipboard}
