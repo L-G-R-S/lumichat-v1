@@ -83,6 +83,73 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
   }
 };
 
+// New function for streaming chat responses
+export const streamChatResponse = async (
+  userMessage: string,
+  onChunk: (chunk: string) => void,
+  onComplete: () => void
+): Promise<void> => {
+  try {
+    // Ensure session ID exists
+    if (!currentSessionId) {
+      currentSessionId = generateUUID();
+    }
+
+    // Store user message in Supabase
+    await supabase.from('chat_messages').insert({
+      user_id: null,
+      type: 'user',
+      content: userMessage
+    });
+
+    // Add user message to chat history
+    chatHistory.push({
+      role: "USER",
+      message: userMessage
+    });
+
+    let fullResponse = "";
+
+    // Get streaming response from Cohere
+    const stream = await client.chatStream({
+      model: "command-a-03-2025",
+      temperature: 0.2,
+      message: userMessage,
+      preamble: systemPreamble,
+      chatHistory: chatHistory.length > 0 ? chatHistory : undefined,
+      maxTokens: 500,
+    });
+
+    // Process each chunk from the stream
+    for await (const chunk of stream) {
+      if (chunk.eventType === "text-generation") {
+        fullResponse += chunk.text;
+        onChunk(chunk.text);
+      }
+    }
+
+    // Store the complete bot response in Supabase
+    await supabase.from('chat_messages').insert({
+      user_id: null,
+      type: 'bot',
+      content: fullResponse
+    });
+
+    // Add bot message to chat history
+    chatHistory.push({
+      role: "CHATBOT",
+      message: fullResponse
+    });
+
+    // Signal completion
+    onComplete();
+
+  } catch (error) {
+    console.error("Erro ao processar stream da API da Cohere:", error);
+    throw error;
+  }
+};
+
 // Adicionar função para limitar histórico de chat (evita excesso de tokens)
 export const trimChatHistory = () => {
   // Manter apenas as últimas 6 mensagens (3 interações) para manter o contexto essencial
