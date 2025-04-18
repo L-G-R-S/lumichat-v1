@@ -2,6 +2,15 @@
 import { supabase } from "@/integrations/supabase/client";
 import { cohereApi } from "./cohereApi";
 
+// Define the chat message type to match our database schema
+type ChatMessage = {
+  id?: string;
+  user_id: string | null;
+  type: 'user' | 'bot';
+  content: string;
+  created_at?: string;
+}
+
 // Inicializar uma nova conversa
 export const initConversation = async (): Promise<boolean> => {
   try {
@@ -21,7 +30,7 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
       user_id: null,
       type: 'user',
       content: userMessage
-    });
+    } as ChatMessage);
 
     // Obter resposta do Cohere
     const response = await cohereApi.chat(userMessage);
@@ -31,7 +40,7 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
       user_id: null,
       type: 'bot',
       content: response
-    });
+    } as ChatMessage);
     
     return response;
   } catch (error) {
@@ -52,7 +61,7 @@ export const streamChatResponse = async (
       user_id: null,
       type: 'user',
       content: userMessage
-    });
+    } as ChatMessage);
 
     let fullResponse = "";
 
@@ -68,7 +77,7 @@ export const streamChatResponse = async (
         user_id: null,
         type: 'bot',
         content: fullResponse
-      });
+      } as ChatMessage);
       
       onComplete();
     };
