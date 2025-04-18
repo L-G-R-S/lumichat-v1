@@ -18,16 +18,40 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
     <style>
-      /* Esconder o botão do Lovable */
+      /* Esconder o botão do Lovable - CSS expandido e mais específico */
       #lovable-edit-button, 
       div[id*="lovable"], 
       div[class*="lovable"],
       div[id*="gptengineer"],
-      div[class*="gptengineer"] {
+      div[class*="gptengineer"],
+      [id*="lovable"],
+      [class*="lovable"],
+      [data-lovable],
+      [data-testid*="lovable"],
+      button[id*="lovable"],
+      button[class*="lovable"],
+      a[href*="lovable"],
+      iframe[src*="lovable"],
+      iframe[src*="gptengineer"],
+      [style*="z-index: 9999"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        z-index: -9999 !important;
+      }
+      
+      /* Esta regra captura elementos adicionados dinamicamente */
+      body * [id*="lovable"],
+      body * [class*="lovable"] {
+        display: none !important;
+        visibility: hidden !important;
       }
     </style>
   </head>
