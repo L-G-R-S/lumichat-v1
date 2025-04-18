@@ -1,26 +1,11 @@
 
 import React from 'react';
-import { BrainCircuit, Sun, Moon } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import { AuthFeatures } from "./AuthFeatures";
-import { Button } from "@/components/ui/button";
-import { useThemeToggle } from "@/hooks/useThemeToggle";
 
 export const AuthSidebar: React.FC = () => {
-  const { isDarkMode, toggleDarkMode } = useThemeToggle();
-
   return (
     <div className="hidden lg:flex flex-col p-8 bg-sidebar space-y-12 relative">
-      <div className="absolute top-4 right-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={toggleDarkMode}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
-      </div>
-      
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <BrainCircuit className="h-8 w-8 text-primary" />
