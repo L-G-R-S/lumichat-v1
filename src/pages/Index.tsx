@@ -2,40 +2,39 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
-import { useChat } from "@/hooks/useChat";
-import { useThemeToggle } from "@/hooks/useThemeToggle";
+import { useChat } from "@/context/ChatContext";
 
 const Index = () => {
   const [isInitialized, setIsInitialized] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useThemeToggle();
   
   const {
     conversations,
     activeConversationId,
-    isLoading,
-    apiKey,
     activeConversation,
-    handleNewChat,
-    handleClearHistory,
-    handleDeleteConversation,
-    handleSendMessage,
+    isLoading,
+    isDarkMode,
+    sendMessage,
+    createNewChat,
+    clearHistory,
+    deleteConversation,
     setActiveConversationId,
+    toggleDarkMode
   } = useChat();
 
   // Auto-start a new conversation if none exists
   useEffect(() => {
     if (!isInitialized && conversations.length === 0) {
-      handleNewChat();
+      createNewChat();
       setIsInitialized(true);
     }
-  }, [conversations.length, handleNewChat, isInitialized]);
+  }, [conversations.length, createNewChat, isInitialized]);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Sidebar
-        onNewChat={handleNewChat}
-        onClearHistory={handleClearHistory}
-        onDeleteConversation={handleDeleteConversation}
+        onNewChat={createNewChat}
+        onClearHistory={clearHistory}
+        onDeleteConversation={deleteConversation}
         conversations={conversations}
         activeConversation={activeConversationId}
         onSelectConversation={setActiveConversationId}
@@ -47,9 +46,7 @@ const Index = () => {
         <ChatArea
           messages={activeConversation?.messages || []}
           isLoading={isLoading}
-          onSendMessage={handleSendMessage}
-          apiKey={apiKey}
-          onApiKeySubmit={() => {}}
+          onSendMessage={sendMessage}
         />
       </main>
     </div>

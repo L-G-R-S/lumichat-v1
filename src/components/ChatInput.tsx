@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, MicOff, PlusCircle, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import FileUploadDialog from "./FileUploadDialog";
+import FileUploader from "./FileHandling/FileUploader";
 import FilePreview from "./FilePreview";
 
 interface ChatInputProps {
@@ -103,13 +103,15 @@ const ChatInput: React.FC<ChatInputProps> = ({
             <PlusCircle className="h-4 w-4 md:h-5 md:w-5 text-primary/80" />
           </Button>
           
-          <FileUploadDialog
+          <FileUploader
             isOpen={showFileUpload}
             onClose={() => setShowFileUpload(false)}
-            onFileProcess={(file) => {
+            onFileSelect={(file) => {
               setSelectedFile(file);
               setShowFileUpload(false);
             }}
+            maxFileSizeMB={10}
+            allowedFileTypes={['.pdf', '.doc', '.docx', '.txt', '.png', '.jpg', '.jpeg']}
           />
           
           <Textarea
