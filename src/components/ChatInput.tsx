@@ -160,7 +160,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       
       <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-2">
         <PlusCircle className="h-3 w-3 mr-1 text-primary/70" />
-        <p>LumiChat AI com tecnologia Cohere pode produzir informações incorretas</p>
+        <p>LumiChat usa inteligência artificial para gerar respostas.</p>
       </div>
     </div>
   );

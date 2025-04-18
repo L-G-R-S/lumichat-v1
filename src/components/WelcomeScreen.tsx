@@ -27,7 +27,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
       </h1>
       
       <p className="text-xl text-muted-foreground mb-16 max-w-md">
-        Sua assistente de IA
+        Sua assistente de IA inteligente,
       </p>
       
       {/* Sugestões de perguntas */}
