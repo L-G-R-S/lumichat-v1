@@ -54,7 +54,7 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen grid lg:grid-cols-2 px-4 py-8 md:px-8 lg:px-16 xl:px-24">
       <AuthSidebar />
       
       <div className="flex items-center justify-center p-6 lg:p-12 relative">
