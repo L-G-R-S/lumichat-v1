@@ -36,7 +36,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         Sua assistente de IA inteligente.
       </p>
       
-      <div className="w-full">
+      <div className="w-full max-w-2xl">
         <div className="flex items-center justify-center mb-4">
           <MessageSquare className="h-4 w-4 md:h-5 md:w-5 mr-2 text-primary" />
           <h2 className="text-base md:text-lg font-medium">Experimente perguntar</h2>
@@ -65,4 +65,3 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
 };
 
 export default WelcomeScreen;
-

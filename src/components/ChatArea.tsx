@@ -16,8 +16,8 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
   const showWelcome = messages.length === 0;
 
   return (
-    <div className="flex-1 flex flex-col w-full overflow-auto min-h-[100dvh] max-w-[100vw] pb-32">
-      <div className="flex-1 pt-16 md:pt-4">
+    <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto overflow-auto min-h-[100dvh] pb-32">
+      <div className="flex-1 pt-16 md:pt-4 w-full">
         {showWelcome ? (
           <WelcomeScreen onSampleQuestionClick={onSendMessage} />
         ) : (

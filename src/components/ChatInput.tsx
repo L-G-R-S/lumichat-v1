@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, MicOff, PlusCircle, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,21 +29,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
       if (selectedFile) {
         import('@/utils/fileUtils').then(async ({ processFileForChat }) => {
           try {
-            // Mostrar que está processando
             const loadingToast = toast.loading("Processando arquivo...");
             
-            // Usar a função de utilidade para processar o arquivo
             const processedMessage = await processFileForChat(selectedFile, message);
             toast.dismiss(loadingToast);
             
-            // Enviar a mensagem processada
             onSendMessage(processedMessage);
             
-            // Limpar após o envio
             setMessage("");
             setSelectedFile(null);
             
-            // Focar no textarea
             setTimeout(() => {
               if (textareaRef.current) {
                 textareaRef.current.focus();
@@ -54,7 +50,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
               description: error instanceof Error ? error.message : "Não foi possível processar o arquivo"
             });
             
-            // Enviar mensagem de erro
             if (message.trim()) {
               onSendMessage(message);
             }
@@ -76,7 +71,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
           setSelectedFile(null);
         });
       } else {
-        // Se não houver arquivo, apenas enviar a mensagem normal
         onSendMessage(message);
         setMessage("");
         
