@@ -112,7 +112,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
               size="icon"
               variant="ghost"
               className={cn(
-                "absolute bottom-2 left-2 opacity-70 hover:opacity-100 transition-opacity",
+                "absolute bottom-2 right-2 opacity-70 hover:opacity-100 transition-opacity",
+                "ml-4", // Added margin to create spacing
                 copied && "text-green-500"
               )}
               onClick={copyToClipboard}
