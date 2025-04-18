@@ -13,8 +13,13 @@ const client = new CohereClient({
 const systemPreamble = `Você é o Lumichat, um assistente simpático criado por Luis Guilherme. 
 Seja conciso e direto nas respostas.`;
 
+interface ChatMessage {
+  role: "USER" | "CHATBOT";
+  message: string;
+}
+
 // Store conversation chat history
-let chatHistory: Message[] = [];
+let chatHistory: ChatMessage[] = [];
 let currentSessionId: string | null = null;
 
 // Initialize a new conversation
@@ -35,26 +40,26 @@ export const sendMessage = async (userMessage: string): Promise<string> => {
     }
 
     // Store user message in Supabase
-    await supabase.from('messages').insert({
-      session_id: currentSessionId,
-      role: 'user',
+    await supabase.from('chat_messages').insert({
+      user_id: null, // Since we're not using authentication yet
+      type: 'user',
       content: userMessage
     });
 
     // Get response from Cohere with lower temperature para respostas mais rápidas
     const response = await client.chat({
       model: "command-a-03-2025",
-      temperature: 0.2, // Reduzido para respostas mais determinísticas e rápidas
+      temperature: 0.2,
       message: userMessage,
       preamble: systemPreamble,
       chatHistory: chatHistory.length > 0 ? chatHistory : undefined,
-      maxTokens: 500, // Limitando o tamanho da resposta para maior velocidade
+      maxTokens: 500,
     });
     
     // Store bot response in Supabase
-    await supabase.from('messages').insert({
-      session_id: currentSessionId,
-      role: 'assistant',
+    await supabase.from('chat_messages').insert({
+      user_id: null, // Since we're not using authentication yet
+      type: 'bot',
       content: response.text || "Desculpe, não consegui processar sua solicitação."
     });
     
@@ -87,11 +92,10 @@ export const trimChatHistory = () => {
 };
 
 // Função para recuperar histórico de mensagens de uma sessão
-export const getSessionHistory = async (sessionId: string) => {
+export const getChatHistory = async () => {
   const { data, error } = await supabase
-    .from('messages')
-    .select('role, content')
-    .eq('session_id', sessionId)
+    .from('chat_messages')
+    .select('type, content, created_at')
     .order('created_at', { ascending: true });
 
   if (error) {
@@ -101,4 +105,3 @@ export const getSessionHistory = async (sessionId: string) => {
 
   return data || [];
 };
-
