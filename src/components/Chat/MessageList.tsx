@@ -39,7 +39,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
           />
         )}
 
-        <div ref={messagesEndRef} className="h-4" />
+        <div ref={messagesEndRef} className="h-32" />
       </div>
     </div>
   );

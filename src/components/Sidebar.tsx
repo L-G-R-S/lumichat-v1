@@ -46,7 +46,7 @@ const Sidebar = ({
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-3 left-3 z-50 lg:hidden bg-background shadow-sm"
+          className="fixed top-3 left-3 z-50 lg:hidden bg-background/90 backdrop-blur-sm shadow-sm border border-border/50"
           aria-label="Menu"
         >
           <SheetTrigger asChild>
