@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, MicOff, PlusCircle, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -158,7 +157,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </div>
       
-      <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-2 w-full">
+      <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-6 md:mt-8 w-full">
         <div className="flex items-center">
           <Bot className="h-3 w-3 mr-1 text-primary/70" />
           <p>LumiChat usa inteligência artificial para gerar respostas.</p>
