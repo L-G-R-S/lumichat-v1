@@ -1,11 +1,16 @@
+
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthSidebar } from "@/components/auth/AuthSidebar";
 import { AuthForm } from "@/components/auth/AuthForm";
-import { AuthFooter } from "@/components/auth/AuthFooter";
 import { AuthModeSwitcher } from "@/components/auth/AuthModeSwitcher";
+import { AuthFooter } from "@/components/auth/AuthFooter";
+import { AuthFeatures } from "@/components/auth/AuthFeatures";
+import { Button } from "@/components/ui/button";
+import { Sun, Moon, BrainCircuit } from "lucide-react";
+import { useThemeToggle } from "@/hooks/useThemeToggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthMode } from "@/components/auth/types";
 
 const Auth: React.FC = () => {
@@ -15,74 +20,56 @@ const Auth: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  
+  const { isDarkMode, toggleDarkMode } = useThemeToggle();
+  const isMobile = useIsMobile();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      toast.success('Login realizado com sucesso!');
-      navigate('/');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao fazer login');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: fullName } }
+      switch (mode) {
+        case 'login':
+          const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+          if (loginError) throw loginError;
+          break;
+        case 'signup':
+          const { error: signupError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+          if (signupError) throw signupError;
+          break;
+        case 'reset':
+          const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
+          if (resetError) throw resetError;
+          break;
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      toast.error('Erro de autenticação', {
+        description: error instanceof Error ? error.message : 'Ocorreu um erro inesperado'
       });
-      if (error) throw error;
-      toast.success('Cadastro realizado com sucesso! Verifique seu e-mail.');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro no cadastro');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/update-password'
-      });
-      if (error) throw error;
-      toast.success('E-mail de recuperação enviado!');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao enviar e-mail de recuperação');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-background">
+    <div className="min-h-screen grid lg:grid-cols-2">
       <AuthSidebar />
       
-      <div className="flex items-center justify-center p-8">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {mode === 'login' ? 'Bem-vindo de volta' : mode === 'signup' ? 'Criar conta' : 'Recuperar senha'}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {mode === 'login' ? 'Entre para continuar usando o LumiChat' : 
-               mode === 'signup' ? 'Crie sua conta para começar' : 
-               'Digite seu e-mail para recuperar sua senha'}
-            </p>
-          </div>
-
+      <div className="flex items-center justify-center p-6 lg:p-12 relative">
+        {isMobile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleDarkMode}
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground z-10"
+          >
+            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+        )}
+        
+        <div className="w-full max-w-md space-y-8">
           <AuthForm
             mode={mode}
             email={email}
@@ -94,10 +81,17 @@ const Auth: React.FC = () => {
             loading={loading}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
-            onSubmit={mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handlePasswordReset}
+            onSubmit={handleSubmit}
           />
-
+          
           <AuthModeSwitcher mode={mode} setMode={setMode} />
+          
+          {isMobile && (
+            <div className="mt-8 lg:hidden">
+              <AuthFeatures />
+            </div>
+          )}
+          
           <AuthFooter />
         </div>
       </div>

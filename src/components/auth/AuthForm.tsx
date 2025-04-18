@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, BrainCircuit } from "lucide-react";
 
 interface AuthFormProps {
   mode: 'login' | 'signup' | 'reset';
@@ -33,6 +33,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
 }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      <div className="flex items-center justify-center mb-6">
+        <BrainCircuit className="h-8 w-8 mr-2 text-primary" />
+        <h1 className="text-2xl font-bold text-primary">
+          {mode === 'login' ? 'Login' : mode === 'signup' ? 'Cadastro' : 'Recuperar Senha'}
+        </h1>
+      </div>
+      
       {mode === 'signup' && (
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="fullName">
