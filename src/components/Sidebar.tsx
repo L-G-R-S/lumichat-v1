@@ -1,12 +1,25 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon, X, Plus, History, InfoIcon } from "lucide-react";
+import { 
+  PanelLeft, 
+  PanelLeftClose, 
+  Plus, 
+  Trash2, 
+  Bot, 
+  Settings, 
+  Sun, 
+  Moon, 
+  History, 
+  InfoIcon 
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { SettingsModal } from "./SettingsModal";
 import { AboutDialog } from "./AboutDialog";
+import SidebarItem from "./SidebarItem";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -36,8 +49,7 @@ const Sidebar = ({
   
   const isActuallyCollapsed = isMobile ? true : isCollapsed;
 
-  const handleDeleteClick = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
+  const handleDeleteConversation = (id: string) => {
     if (onDeleteConversation) {
       onDeleteConversation(id);
       toast.success("Conversa excluída com sucesso");
@@ -91,34 +103,14 @@ const Sidebar = ({
               </div>
               
               {conversations.map((conversation) => (
-                <div 
+                <SidebarItem
                   key={conversation.id}
-                  className="flex group items-center"
-                >
-                  <Button
-                    variant={activeConversation === conversation.id ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start text-sm font-normal truncate pr-8 relative",
-                      activeConversation === conversation.id ? "bg-secondary/80" : "hover:bg-secondary/40"
-                    )}
-                    onClick={() => onSelectConversation(conversation.id)}
-                  >
-                    <MessageSquarePlus className="mr-2 h-4 w-4 shrink-0" />
-                    <span className="truncate">{conversation.title}</span>
-                    
-                    {onDeleteConversation && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={(e) => handleDeleteClick(e, conversation.id)}
-                        aria-label="Excluir conversa"
-                      >
-                        <X className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
-                      </Button>
-                    )}
-                  </Button>
-                </div>
+                  id={conversation.id}
+                  title={conversation.title}
+                  isActive={activeConversation === conversation.id}
+                  onSelect={onSelectConversation}
+                  onDelete={onDeleteConversation ? handleDeleteConversation : undefined}
+                />
               ))}
             </div>
           )}

@@ -16,17 +16,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-16 max-w-3xl mx-auto text-center pb-[200px]">
+    <div className="flex flex-col items-center justify-center px-4 py-8 md:py-16 max-w-3xl mx-auto text-center pb-24 md:pb-[200px]">
       {/* Logo e título */}
-      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
-        <Bot className="h-10 w-10 text-primary" />
+      <div className="flex items-center justify-center w-16 md:w-20 h-16 md:h-20 rounded-full bg-primary/10 mb-4 md:mb-6">
+        <Bot className="h-8 w-8 md:h-10 md:w-10 text-primary" />
       </div>
       
-      <h1 className="text-5xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
+      <h1 className="text-4xl md:text-5xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
         LumiChat
       </h1>
       
-      <p className="text-xl text-muted-foreground mb-16 max-w-md">
+      <p className="text-lg md:text-xl text-muted-foreground mb-10 md:mb-16 max-w-md">
         Sua assistente de IA inteligente.
       </p>
       
@@ -52,7 +52,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
       </div>
       
-      <div className="flex items-center mt-12 text-xs text-muted-foreground">
+      <div className="flex items-center mt-8 md:mt-12 text-xs text-muted-foreground">
         <p>Para melhores resultados, seja claro e específico em suas perguntas</p>
       </div>
     </div>

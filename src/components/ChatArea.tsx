@@ -27,7 +27,7 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
       {showWelcome ? (
         <WelcomeScreen onSampleQuestionClick={onSendMessage} />
       ) : (
-        <div className="flex-1 pt-6 pb-32 overflow-auto">
+        <div className="flex-1 pt-4 md:pt-6 pb-28 md:pb-32 overflow-auto">
           {messages.map((message) => (
             <ChatMessage
               key={message.id}
@@ -44,11 +44,11 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
             />
           )}
 
-          <div ref={messagesEndRef} className="h-24" /> {/* Adiciona um espaço extra para evitar sobreposição */}
+          <div ref={messagesEndRef} className="h-16 md:h-24" />
         </div>
       )}
       
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-4 pb-6 lg:pl-[280px] border-t border-border/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-3 md:pt-4 pb-4 md:pb-6 lg:pl-[280px] border-t border-border/50">
         <ChatInput
           onSendMessage={onSendMessage}
           isLoading={isLoading}
