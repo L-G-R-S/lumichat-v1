@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Menu, PanelLeft, PanelLeftClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,17 +43,18 @@ const Sidebar = ({
   if (isMobile) {
     return (
       <>
-        <Sheet>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-3 left-3 z-50 lg:hidden bg-background shadow-sm"
+          aria-label="Menu"
+        >
           <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="fixed top-3 left-3 z-50 lg:hidden"
-              aria-label="Menu"
-            >
-              <Menu size={24} />
-            </Button>
+            <Menu size={24} />
           </SheetTrigger>
+        </Button>
+
+        <Sheet>
           <SheetContent side="left" className="p-0 w-[280px]">
             <SidebarContent {...sidebarContentProps} />
           </SheetContent>
