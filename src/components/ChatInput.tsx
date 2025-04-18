@@ -1,10 +1,10 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, MicOff, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import FileUploadDialog from "./FileUploadDialog";
 import FilePreview from "./FilePreview";
+import { Bot } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -64,7 +64,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
     }
   };
 
-  // Ajustar altura do textarea conforme o conteúdo
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -77,7 +76,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
     adjustTextareaHeight();
   }, [message]);
 
-  // Focar no textarea ao carregar o componente
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -159,7 +157,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       </div>
       
       <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-2">
-        <PlusCircle className="h-3 w-3 mr-1 text-primary/70" />
+        <Bot className="h-3 w-3 mr-1 text-primary/70" />
         <p>LumiChat usa inteligência artificial para gerar respostas.</p>
       </div>
     </div>
