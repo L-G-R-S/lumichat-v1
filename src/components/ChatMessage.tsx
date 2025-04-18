@@ -1,7 +1,10 @@
 
 import React from "react";
-import { Bot, User } from "lucide-react";
+import { Bot, User, Copy, CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 type MessageType = "user" | "bot";
 
@@ -13,6 +16,18 @@ interface ChatMessageProps {
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = false }) => {
   const isBotMessage = type === "bot";
+  const [copied, setCopied] = React.useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      toast.success("Mensagem copiada!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Erro ao copiar mensagem");
+    }
+  };
   
   return (
     <div 
@@ -32,21 +47,39 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       </div>
       
       <div className={cn(
-        "flex-1 px-5 py-4 rounded-2xl shadow-sm",
-        isBotMessage 
-          ? "bg-secondary/40 text-foreground border border-secondary/40" 
-          : "bg-primary/5 text-foreground border border-primary/10"
+        "flex-1 relative group",
       )}>
-        {isLoading ? (
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" />
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-150" />
-            <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-300" />
-          </div>
-        ) : (
-          <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-            {content}
-          </div>
+        <div className={cn(
+          "px-5 py-4 rounded-2xl shadow-sm",
+          isBotMessage 
+            ? "bg-secondary/40 text-foreground border border-secondary/40" 
+            : "bg-primary/5 text-foreground border border-primary/10"
+        )}>
+          {isLoading ? (
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-150" />
+              <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-300" />
+            </div>
+          ) : (
+            <div className="prose prose-sm dark:prose-invert max-w-none break-words">
+              <ReactMarkdown>{content}</ReactMarkdown>
+            </div>
+          )}
+        </div>
+
+        {isBotMessage && !isLoading && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className={cn(
+              "absolute -right-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity",
+              copied && "text-green-500"
+            )}
+            onClick={copyToClipboard}
+          >
+            {copied ? <CheckCheck size={16} /> : <Copy size={16} />}
+          </Button>
         )}
       </div>
     </div>
