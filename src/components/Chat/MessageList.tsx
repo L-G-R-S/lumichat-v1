@@ -20,8 +20,8 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
   }
 
   return (
-    <div className="flex-1 pt-4 md:pt-6 px-4 overflow-auto">
-      <div className="max-w-3xl mx-auto space-y-4">
+    <div className="flex-1 pt-0 md:pt-6 px-4 overflow-y-auto">
+      <div className="max-w-3xl mx-auto space-y-4 pb-16">
         {messages.map((message) => (
           <ChatMessage
             key={message.id}
@@ -39,7 +39,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
           />
         )}
 
-        <div ref={messagesEndRef} className="h-32" />
+        <div ref={messagesEndRef} className="h-8" />
       </div>
     </div>
   );
