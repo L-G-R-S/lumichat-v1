@@ -46,11 +46,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
         {isBotMessage ? <Bot size={18} /> : <User size={18} />}
       </div>
       
-      <div className={cn(
-        "flex-1 relative group",
-      )}>
+      <div className="flex-1 flex flex-col">
         <div className={cn(
-          "px-5 py-4 rounded-2xl shadow-sm",
+          "px-5 py-4 rounded-2xl shadow-sm mb-2",
           isBotMessage 
             ? "bg-secondary/40 text-foreground border border-secondary/40" 
             : "bg-primary/5 text-foreground border border-primary/10"
@@ -63,23 +61,33 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
             </div>
           ) : (
             <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-              <ReactMarkdown>{content}</ReactMarkdown>
+              <ReactMarkdown 
+                components={{
+                  p: ({node, ...props}) => <p className="mb-4" {...props} />,
+                  h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-3" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-lg font-semibold mb-3" {...props} />,
+                }}
+              >
+                {content}
+              </ReactMarkdown>
             </div>
           )}
         </div>
 
         {isBotMessage && !isLoading && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className={cn(
-              "absolute -right-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity",
-              copied && "text-green-500"
-            )}
-            onClick={copyToClipboard}
-          >
-            {copied ? <CheckCheck size={16} /> : <Copy size={16} />}
-          </Button>
+          <div className="flex justify-center">
+            <Button
+              size="icon"
+              variant="ghost"
+              className={cn(
+                "opacity-70 hover:opacity-100 transition-opacity",
+                copied && "text-green-500"
+              )}
+              onClick={copyToClipboard}
+            >
+              {copied ? <CheckCheck size={16} /> : <Copy size={16} />}
+            </Button>
+          </div>
         )}
       </div>
     </div>
