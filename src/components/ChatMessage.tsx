@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Bot, User, Copy, CheckCheck } from "lucide-react";
+import { Bot, User, Copy, CheckCheck, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
@@ -30,6 +30,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
   };
 
   const renderContent = () => {
+    // Verificar se é uma imagem
     if (content.includes('[Imagem enviada]')) {
       const imageData = content.split('[Imagem enviada] ')[1];
       return (
@@ -43,18 +44,52 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       );
     }
 
-    if (content.includes('[Arquivo enviado]')) {
-      const fileContent = content.split('\n\nConteúdo:\n')[1];
+    // Verificar se é um PDF
+    if (content.includes('[PDF enviado]')) {
       return (
         <div className="mt-2 p-3 md:p-4 bg-muted/30 rounded-lg">
-          <p className="text-xs sm:text-sm text-muted-foreground mb-2">[Arquivo enviado]</p>
-          <div className="prose prose-sm dark:prose-invert max-w-none overflow-auto">
-            <ReactMarkdown>{fileContent}</ReactMarkdown>
+          <div className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary/70" />
+            <p className="text-sm">{content.split('[PDF enviado] ')[1]}</p>
           </div>
         </div>
       );
     }
 
+    // Verificar se é outro tipo de arquivo
+    if (content.includes('[Arquivo enviado]')) {
+      if (content.includes('\n\nConteúdo:\n')) {
+        // Arquivo com conteúdo legível
+        const fileInfo = content.split('\n\nConteúdo:\n')[0].replace('[Arquivo enviado: ', '').replace(']', '');
+        const fileContent = content.split('\n\nConteúdo:\n')[1];
+        
+        return (
+          <div className="mt-2">
+            <div className="p-3 md:p-3 bg-muted/30 rounded-lg mb-3">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary/70" />
+                <p className="text-xs sm:text-sm">{fileInfo}</p>
+              </div>
+            </div>
+            <div className="prose prose-sm dark:prose-invert max-w-none overflow-auto">
+              <ReactMarkdown>{fileContent}</ReactMarkdown>
+            </div>
+          </div>
+        );
+      } else {
+        // Arquivo sem conteúdo legível
+        return (
+          <div className="mt-2 p-3 md:p-4 bg-muted/30 rounded-lg">
+            <div className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary/70" />
+              <p className="text-sm">{content.split('[Arquivo enviado] ')[1]}</p>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    // Mensagem normal com texto
     return (
       <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none break-words">
         <ReactMarkdown 

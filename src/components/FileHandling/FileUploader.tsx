@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Progress } from "@/components/ui/progress";
 import { Upload, X, FileText, File, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { isFileSizeValid, formatFileSize } from "@/utils/fileUtils";
+import { isFileSizeValid, formatFileSize, isFileTypeAllowed, getFileType } from "@/utils/fileUtils";
 
 interface FileUploaderProps {
   isOpen: boolean;
@@ -27,8 +27,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  const allowedTypes = allowedFileTypes.join(', ');
+  const allowedTypesText = allowedFileTypes.join(', ');
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -41,30 +42,26 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   }, []);
 
   const validateFile = (file: File): boolean => {
+    setErrorMessage(null);
+    
     // Verificar tamanho do arquivo
     if (!isFileSizeValid(file, maxFileSizeMB)) {
+      const errorMsg = `O arquivo excede o tamanho máximo de ${maxFileSizeMB}MB.`;
+      setErrorMessage(errorMsg);
       toast.error("Arquivo muito grande", {
-        description: `O arquivo excede o tamanho máximo de ${maxFileSizeMB}MB.`
+        description: errorMsg
       });
       return false;
     }
     
-    // Verificar tipo de arquivo (se allowedFileTypes não estiver vazio)
-    if (allowedFileTypes.length > 0) {
-      const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}`;
-      const fileType = file.type.toLowerCase();
-      
-      const isTypeAllowed = allowedFileTypes.some(type => {
-        // Verificar por extensão ou mimetype
-        return fileType.includes(type.replace('.', '')) || fileExtension === type;
+    // Verificar tipo de arquivo
+    if (!isFileTypeAllowed(file, allowedFileTypes)) {
+      const errorMsg = `Apenas arquivos ${allowedTypesText} são permitidos.`;
+      setErrorMessage(errorMsg);
+      toast.error("Tipo de arquivo não suportado", {
+        description: errorMsg
       });
-      
-      if (!isTypeAllowed) {
-        toast.error("Tipo de arquivo não suportado", {
-          description: `Apenas arquivos ${allowedTypes} são permitidos.`
-        });
-        return false;
-      }
+      return false;
     }
     
     return true;
@@ -75,21 +72,32 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     
     setIsProcessing(true);
     setSelectedFile(file);
+    setErrorMessage(null);
     
-    // Simular progresso de upload
-    for (let i = 0; i <= 100; i += 10) {
-      setUploadProgress(i);
-      await new Promise(resolve => setTimeout(resolve, 50));
+    try {
+      // Simular progresso de upload
+      for (let i = 0; i <= 100; i += 10) {
+        setUploadProgress(i);
+        await new Promise(resolve => setTimeout(resolve, 30));
+      }
+      
+      onFileSelect(file);
+      setIsProcessing(false);
+      onClose();
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "Erro desconhecido ao processar arquivo";
+      setErrorMessage(errorMsg);
+      toast.error("Erro ao processar arquivo", {
+        description: errorMsg
+      });
+      setIsProcessing(false);
     }
-    
-    onFileSelect(file);
-    setIsProcessing(false);
-    onClose();
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    setErrorMessage(null);
     
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -105,15 +113,23 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   }, []);
 
   const getFileIcon = (file: File) => {
-    if (file.type.includes('image')) return <ImageIcon className="w-6 h-6" />;
-    if (file.type.includes('pdf')) return <FileText className="w-6 h-6" />;
-    return <File className="w-6 h-6" />;
+    const fileType = getFileType(file);
+    
+    switch (fileType) {
+      case 'image':
+        return <ImageIcon className="w-6 h-6" />;
+      case 'pdf':
+        return <FileText className="w-6 h-6" />;
+      default:
+        return <File className="w-6 h-6" />;
+    }
   };
 
   const handleCancel = () => {
     setSelectedFile(null);
     setUploadProgress(0);
     setIsProcessing(false);
+    setErrorMessage(null);
     onClose();
   };
 
@@ -131,7 +147,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
           className={cn(
             "mt-4 p-8 border-2 border-dashed rounded-lg transition-colors duration-200",
             isDragging ? "border-primary bg-primary/5" : "border-muted",
-            isProcessing ? "pointer-events-none opacity-50" : "cursor-pointer"
+            isProcessing ? "pointer-events-none opacity-80" : "cursor-pointer"
           )}
         >
           <div className="flex flex-col items-center justify-center gap-4">
@@ -152,8 +168,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               </label>
             </div>
             <p className="text-xs text-muted-foreground">
-              {allowedTypes} (max {maxFileSizeMB}MB)
+              {allowedTypesText} (máx {maxFileSizeMB}MB)
             </p>
+            
+            {errorMessage && (
+              <p className="text-sm text-red-500 mt-2">{errorMessage}</p>
+            )}
           </div>
         </div>
 
