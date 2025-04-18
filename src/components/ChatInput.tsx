@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Send, Mic, MicOff, PlusCircle, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import FileUploader from "./FileHandling/FileUploader";
 import FilePreview from "./FilePreview";
 
@@ -24,35 +25,67 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSendMessage = () => {
     if ((message.trim() || selectedFile) && !isDisabled && !isLoading) {
-      let finalMessage = message;
-      
       if (selectedFile) {
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-          const content = fileReader.result as string;
-          const fileMessage = content.startsWith('data:image/') 
-            ? `[Imagem enviada] ${content}`
-            : `[Arquivo enviado]\n\nConteúdo:\n${content}`;
-          onSendMessage(`${message}\n\n${fileMessage}`);
-        };
-        
-        if (selectedFile.type.startsWith('image/')) {
-          fileReader.readAsDataURL(selectedFile);
-        } else {
-          fileReader.readAsText(selectedFile);
-        }
+        import('@/utils/fileUtils').then(async ({ processFileForChat }) => {
+          try {
+            // Mostrar que está processando
+            const loadingToast = toast.loading("Processando arquivo...");
+            
+            // Usar a função de utilidade para processar o arquivo
+            const processedMessage = await processFileForChat(selectedFile, message);
+            toast.dismiss(loadingToast);
+            
+            // Enviar a mensagem processada
+            onSendMessage(processedMessage);
+            
+            // Limpar após o envio
+            setMessage("");
+            setSelectedFile(null);
+            
+            // Focar no textarea
+            setTimeout(() => {
+              if (textareaRef.current) {
+                textareaRef.current.focus();
+              }
+            }, 0);
+          } catch (error) {
+            console.error("Erro ao processar arquivo:", error);
+            toast.error("Erro ao processar arquivo", {
+              description: error instanceof Error ? error.message : "Não foi possível processar o arquivo"
+            });
+            
+            // Enviar mensagem de erro
+            if (message.trim()) {
+              onSendMessage(message);
+            }
+            
+            setMessage("");
+            setSelectedFile(null);
+          }
+        }).catch(error => {
+          console.error("Erro ao importar utilitários de arquivo:", error);
+          toast.error("Erro interno", {
+            description: "Não foi possível carregar o processador de arquivos"
+          });
+          
+          if (message.trim()) {
+            onSendMessage(message);
+          }
+          
+          setMessage("");
+          setSelectedFile(null);
+        });
       } else {
-        onSendMessage(finalMessage);
+        // Se não houver arquivo, apenas enviar a mensagem normal
+        onSendMessage(message);
+        setMessage("");
+        
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+          }
+        }, 0);
       }
-      
-      setMessage("");
-      setSelectedFile(null);
-      
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-        }
-      }, 0);
     }
   };
 

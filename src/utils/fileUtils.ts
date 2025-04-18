@@ -52,31 +52,79 @@ export const processFileForChat = async (file: File, userMessage: string = ""): 
       throw new Error(`O arquivo excede o limite de tamanho (10MB)`);
     }
     
-    // Determina o tipo de conteúdo
-    let fileContent = "";
+    // Preparar a mensagem do usuário com formatação adequada
+    const preparedUserMessage = userMessage.trim() ? `${userMessage.trim()}\n\n` : "";
     
-    if (file.type.startsWith('image/')) {
-      // Processar imagem
-      fileContent = await readFileAsDataURL(file);
-      return `${userMessage}\n\n[Imagem enviada] ${fileContent}`;
-    } else if (file.type === 'application/pdf') {
-      // Processar PDF - apenas informações
-      return `${userMessage}\n\n[PDF enviado] ${file.name} (${formatFileSize(file.size)})`;
-    } else {
-      // Tentar ler como texto para outros tipos de arquivo
-      try {
-        fileContent = await readFileAsText(file);
-        return `${userMessage}\n\n[Arquivo enviado: ${file.name}]\n\nConteúdo:\n${fileContent}`;
-      } catch (textError) {
-        // Se falhar ao ler como texto, usar apenas as informações do arquivo
-        console.warn("Não foi possível ler o conteúdo como texto:", textError);
-        return `${userMessage}\n\n[Arquivo enviado] ${file.name} (${formatFileSize(file.size)})`;
+    // Determina o tipo de conteúdo baseado no tipo do arquivo
+    const fileType = getFileType(file);
+    
+    switch (fileType) {
+      case 'image': {
+        // Processar imagem - ler como data URL
+        try {
+          const dataUrl = await readFileAsDataURL(file);
+          return `${preparedUserMessage}[Imagem enviada] ${dataUrl}`;
+        } catch (error) {
+          console.error("Erro ao ler imagem como DataURL:", error);
+          throw new Error("Não foi possível processar a imagem");
+        }
+      }
+      
+      case 'pdf': {
+        // Processar PDF - apenas informações
+        return `${preparedUserMessage}[PDF enviado] ${file.name} (${formatFileSize(file.size)})`;
+      }
+      
+      case 'text': {
+        // Processar texto - ler conteúdo
+        try {
+          const textContent = await readFileAsText(file);
+          const formattedContent = textContent.substring(0, 100000); // Limitar tamanho
+          return `${preparedUserMessage}[Arquivo enviado: ${file.name}]\n\nConteúdo:\n${formattedContent}`;
+        } catch (error) {
+          console.error("Erro ao ler arquivo de texto:", error);
+          return `${preparedUserMessage}[Arquivo enviado] ${file.name} (${formatFileSize(file.size)}) - Erro ao ler conteúdo`;
+        }
+      }
+      
+      case 'document': {
+        // Documentos do Office - tentar ler como texto, mas com tratamento de erro
+        try {
+          const textContent = await readFileAsText(file);
+          if (textContent && textContent.length > 0 && !textContent.includes("�")) {
+            // Conteúdo parece ser legível como texto
+            const formattedContent = textContent.substring(0, 50000); // Limitar ainda mais por ser documento
+            return `${preparedUserMessage}[Arquivo enviado: ${file.name}]\n\nConteúdo:\n${formattedContent}`;
+          } else {
+            // Conteúdo não parece legível como texto
+            return `${preparedUserMessage}[Arquivo enviado] ${file.name} (${formatFileSize(file.size)})`;
+          }
+        } catch (error) {
+          console.warn("Não foi possível ler o documento como texto:", error);
+          return `${preparedUserMessage}[Arquivo enviado] ${file.name} (${formatFileSize(file.size)})`;
+        }
+      }
+      
+      default: {
+        // Outros tipos - tentar ler como texto com tratamento de erro
+        try {
+          const textContent = await readFileAsText(file);
+          if (textContent && textContent.length > 0 && !textContent.includes("�")) {
+            const formattedContent = textContent.substring(0, 20000); // Limitar ainda mais
+            return `${preparedUserMessage}[Arquivo enviado: ${file.name}]\n\nConteúdo:\n${formattedContent}`;
+          } else {
+            return `${preparedUserMessage}[Arquivo enviado] ${file.name} (${formatFileSize(file.size)})`;
+          }
+        } catch (textError) {
+          console.warn("Não foi possível ler o conteúdo como texto:", textError);
+          return `${preparedUserMessage}[Arquivo enviado] ${file.name} (${formatFileSize(file.size)})`;
+        }
       }
     }
   } catch (error) {
     console.error("Erro ao processar arquivo:", error);
     const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
-    return `${userMessage}\n\n[Erro ao processar arquivo] ${errorMessage}`;
+    return `${userMessage.trim() ? `${userMessage}\n\n` : ""}[Erro ao processar arquivo] ${errorMessage}`;
   }
 };
 
