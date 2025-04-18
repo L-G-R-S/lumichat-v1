@@ -75,12 +75,14 @@ const Sidebar = ({
           size="icon"
           className={cn(
             "absolute top-3 right-0 translate-x-full z-40 bg-background border border-l-0 rounded-l-none h-9 w-9",
-            "lg:top-4 lg:h-10 lg:w-10"
+            "lg:top-4 lg:h-10 lg:w-10",
+            "shadow-sm hover:shadow-md transition-shadow"
           )}
           onClick={() => setIsCollapsed(!isCollapsed)}
           aria-label={isActuallyCollapsed ? "Abrir sidebar" : "Fechar sidebar"}
         >
           {isActuallyCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
+          <span className="sr-only">{isActuallyCollapsed ? "Abrir menu" : "Fechar menu"}</span>
         </Button>
 
         <div 

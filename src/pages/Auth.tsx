@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthSidebar } from "@/components/auth/AuthSidebar";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthMode } from "@/components/auth/types";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, BrainCircuit, Loader2 } from "lucide-react";
 
 const Auth: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>('login');
@@ -20,9 +20,19 @@ const Auth: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
   
   const { isDarkMode, toggleDarkMode } = useThemeToggle();
   const isMobile = useIsMobile();
+
+  // Simular carregamento inicial para transição suave
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +43,27 @@ const Auth: React.FC = () => {
         case 'login':
           const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
           if (loginError) throw loginError;
+          toast.success("Login realizado com sucesso", {
+            description: "Redirecionando para o dashboard..."
+          });
           break;
         case 'signup':
-          const { error: signupError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+          const { error: signupError } = await supabase.auth.signUp({ 
+            email, 
+            password, 
+            options: { data: { full_name: fullName } } 
+          });
           if (signupError) throw signupError;
+          toast.success("Cadastro realizado com sucesso", {
+            description: "Verifique seu e-mail para confirmar sua conta."
+          });
           break;
         case 'reset':
           const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
           if (resetError) throw resetError;
+          toast.success("Email de recuperação enviado", {
+            description: "Verifique sua caixa de entrada para redefinir sua senha."
+          });
           break;
       }
     } catch (error) {
@@ -53,23 +76,47 @@ const Auth: React.FC = () => {
     }
   };
 
+  // Loading screen
+  if (isPageLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="relative">
+            <BrainCircuit className="w-12 h-12 text-primary animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-radial from-primary/20 to-transparent opacity-70 rounded-full blur-xl"></div>
+          </div>
+          <p className="text-sm text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 px-4 py-8 md:px-8 lg:px-16 xl:px-24">
+    <div className="min-h-screen grid lg:grid-cols-2">
       <AuthSidebar />
       
-      <div className="flex items-center justify-center p-6 lg:p-12 relative">
-        <div className="absolute top-4 right-4 flex items-center space-x-4">
+      <div className="flex flex-col items-center justify-center p-6 lg:p-12 relative animate-fade-in">
+        {/* Theme toggle and language selector */}
+        <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={toggleDarkMode}
-            className="text-muted-foreground hover:text-foreground z-10"
+            className="text-muted-foreground hover:text-foreground rounded-full h-9 w-9"
+            aria-label={isDarkMode ? "Alternar para modo claro" : "Alternar para modo escuro"}
           >
             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </div>
         
-        <div className="w-full max-w-md space-y-8">
+        {/* Mobile logo */}
+        <div className="flex items-center justify-center mb-8 lg:hidden">
+          <BrainCircuit className="h-10 w-10 mr-3 text-primary" />
+          <h1 className="text-3xl font-bold text-gradient">LumiChat</h1>
+        </div>
+        
+        {/* Auth card */}
+        <div className="w-full max-w-md glass-card p-8 space-y-8">
           <AuthForm
             mode={mode}
             email={email}
@@ -87,11 +134,13 @@ const Auth: React.FC = () => {
           <AuthModeSwitcher mode={mode} setMode={setMode} />
           
           {isMobile && (
-            <div className="mt-8 lg:hidden">
+            <div className="mt-8 pt-6 border-t border-border lg:hidden">
               <AuthFeatures />
             </div>
           )}
-          
+        </div>
+        
+        <div className="mt-6">
           <AuthFooter />
         </div>
       </div>
