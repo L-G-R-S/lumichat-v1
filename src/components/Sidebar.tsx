@@ -42,7 +42,7 @@ const Sidebar = ({
   toggleDarkMode,
   isDarkMode,
 }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -58,13 +58,17 @@ const Sidebar = ({
 
   return (
     <div className={cn(
-      "fixed top-0 left-0 z-30 h-full transition-all duration-300",
+      "fixed top-0 left-0 z-40 h-full transition-all duration-300",
       isActuallyCollapsed ? "w-0" : "w-[280px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-4 right-0 translate-x-full z-30 bg-background border border-l-0 rounded-l-none h-10 w-10"
+        className={cn(
+          "absolute top-3 right-0 translate-x-full z-40 bg-background border border-l-0 rounded-l-none h-9 w-9",
+          "lg:top-4 lg:h-10 lg:w-10",
+          isMobile && "hidden"
+        )}
         onClick={() => setIsCollapsed(!isCollapsed)}
         aria-label={isActuallyCollapsed ? "Abrir sidebar" : "Fechar sidebar"}
       >
