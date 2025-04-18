@@ -28,6 +28,41 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       toast.error("Erro ao copiar mensagem");
     }
   };
+
+  const renderContent = () => {
+    // Check if the content is a base64 image
+    if (content.startsWith('data:image')) {
+      return (
+        <div className="mt-2">
+          <p className="mb-2 text-sm text-muted-foreground">[Imagem enviada]</p>
+          <img 
+            src={content} 
+            alt="Imagem enviada"
+            className="max-w-[300px] rounded-lg shadow-sm"
+          />
+        </div>
+      );
+    }
+
+    // Handle file uploads that start with [Arquivo enviado]
+    if (content.includes('[Arquivo enviado]')) {
+      return (
+        <div className="mt-2">
+          <p className="text-sm text-muted-foreground">{content.split('\n')[0]}</p>
+          <div className="mt-2 p-3 bg-muted/30 rounded-lg">
+            <ReactMarkdown>{content.split('\n').slice(2).join('\n')}</ReactMarkdown>
+          </div>
+        </div>
+      );
+    }
+
+    // Default content rendering
+    return (
+      <div className="prose prose-sm dark:prose-invert max-w-none break-words">
+        <ReactMarkdown>{content}</ReactMarkdown>
+      </div>
+    );
+  };
   
   return (
     <div 
@@ -60,17 +95,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
               <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse delay-300" />
             </div>
           ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-              <ReactMarkdown 
-                components={{
-                  p: ({node, ...props}) => <p className="mb-4" {...props} />,
-                  h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-3" {...props} />,
-                  h2: ({node, ...props}) => <h2 className="text-lg font-semibold mb-3" {...props} />,
-                }}
-              >
-                {content}
-              </ReactMarkdown>
-            </div>
+            renderContent()
           )}
 
           {isBotMessage && !isLoading && (
