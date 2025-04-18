@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { cn } from "@/lib/utils";
 interface FileUploadDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onFileProcess: (content: string) => void;
+  onFileProcess: (file: File) => void;
 }
 
 const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
@@ -40,12 +39,10 @@ const FileUploadDialog: React.FC<FileUploadDialogProps> = ({
       // Simular progresso de upload
       for (let i = 0; i <= 100; i += 10) {
         setUploadProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
 
-      // Processar arquivo baseado no tipo
-      const content = await readFileContent(file);
-      onFileProcess(content);
+      onFileProcess(file);
       onClose();
     } catch (error) {
       console.error("Erro ao processar arquivo:", error);
