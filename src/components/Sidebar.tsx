@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { SettingsModal } from "./SettingsModal";
+import { AboutDialog } from "./AboutDialog";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -30,6 +31,7 @@ const Sidebar = ({
 }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const isMobile = useIsMobile();
   
   const isActuallyCollapsed = isMobile ? true : isCollapsed;
@@ -157,6 +159,7 @@ const Sidebar = ({
               variant="ghost" 
               size="sm" 
               className="w-full justify-start mb-2"
+              onClick={() => setIsAboutOpen(true)}
             >
               <InfoIcon className="mr-2 h-4 w-4" />
               <span>Sobre o LumiChat</span>
@@ -185,6 +188,10 @@ const Sidebar = ({
       <SettingsModal 
         open={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
+      />
+      <AboutDialog
+        open={isAboutOpen}
+        onOpenChange={setIsAboutOpen}
       />
     </div>
   );
