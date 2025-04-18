@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Bot, MessageSquare, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
           <h2 className="text-base md:text-lg font-medium">Experimente perguntar</h2>
         </div>
         
-        <div className="grid grid-cols-1 gap-2 md:gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
           {sampleQuestions.map((question, index) => (
             <Button 
               key={index} 
