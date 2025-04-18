@@ -2,18 +2,25 @@
 import React from "react";
 import { Bot, MessageSquare, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface WelcomeScreenProps {
   onSampleQuestionClick: (question: string) => void;
 }
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) => {
+  const isMobile = useIsMobile();
+  
   const sampleQuestions = [
     "Explique como funcionam os buracos negros",
     "Quais são os benefícios da meditação diária?",
     "Crie uma lista de exercícios para melhorar a postura",
     "Quais são as tendências de tecnologia para 2025?"
   ];
+
+  const displayQuestions = isMobile 
+    ? sampleQuestions.slice(0, 2) 
+    : sampleQuestions;
 
   return (
     <div className="flex flex-col items-center justify-center px-4 py-6 md:py-16 max-w-3xl mx-auto text-center pb-20 md:pb-[200px]">
@@ -36,7 +43,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-          {sampleQuestions.map((question, index) => (
+          {displayQuestions.map((question, index) => (
             <Button 
               key={index} 
               variant="outline"
@@ -58,3 +65,4 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
 };
 
 export default WelcomeScreen;
+
