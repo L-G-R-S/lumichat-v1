@@ -42,7 +42,7 @@ const Index = () => {
         isDarkMode={isDarkMode}
       />
       
-      <main className="flex-1 flex flex-col pl-0 lg:pl-[280px]">
+      <main className="flex-1 flex flex-col pl-0">
         <ChatArea
           messages={activeConversation?.messages || []}
           isLoading={isLoading}
