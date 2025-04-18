@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PanelLeft, PanelLeftClose, MessageSquarePlus, Trash2, Bot, Settings, Sun, Moon, X, Plus, History, InfoIcon } from "lucide-react";
@@ -6,6 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { SettingsModal } from "./SettingsModal";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -29,13 +29,13 @@ const Sidebar = ({
   isDarkMode,
 }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isMobile = useIsMobile();
   
-  // Automatically collapse sidebar on mobile
   const isActuallyCollapsed = isMobile ? true : isCollapsed;
 
   const handleDeleteClick = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation(); // Prevents triggering the conversation selection
+    e.stopPropagation();
     if (onDeleteConversation) {
       onDeleteConversation(id);
       toast.success("Conversa excluída com sucesso");
@@ -43,10 +43,10 @@ const Sidebar = ({
   };
 
   return (
-    <div className={`fixed top-0 left-0 z-30 h-full transition-all duration-300 ${
+    <div className={cn(
+      "fixed top-0 left-0 z-30 h-full transition-all duration-300",
       isActuallyCollapsed ? "w-0" : "w-[280px]"
-    }`}>
-      {/* Toggle button (always visible) */}
+    )}>
       <Button
         variant="ghost"
         size="icon"
@@ -57,7 +57,6 @@ const Sidebar = ({
         {isActuallyCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
       </Button>
 
-      {/* Main sidebar content */}
       <div 
         className={cn(
           "h-full bg-sidebar border-r overflow-hidden",
@@ -148,6 +147,7 @@ const Sidebar = ({
               variant="ghost" 
               size="sm" 
               className="w-full justify-start"
+              onClick={() => setIsSettingsOpen(true)}
             >
               <Settings className="mr-2 h-4 w-4" />
               <span>Configurações</span>
@@ -181,6 +181,11 @@ const Sidebar = ({
           </div>
         </div>
       </div>
+
+      <SettingsModal 
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
+      />
     </div>
   );
 };
