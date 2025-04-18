@@ -107,7 +107,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
             renderContent()
           )}
 
-          {isBotMessage && !isLoading && (
+          {!isLoading && (
             <Button
               size="icon"
               variant="ghost"
