@@ -9,6 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface SettingsModalProps {
   open: boolean;
@@ -16,9 +18,23 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
-  const handleLogout = () => {
-    // Implement logout logic here
-    toast.success("Desconectado com sucesso!");
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        toast.error("Erro ao sair: " + error.message);
+        return;
+      }
+
+      toast.success("Desconectado com sucesso!");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Ocorreu um erro ao fazer logout");
+    }
   };
 
   return (
