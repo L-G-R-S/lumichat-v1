@@ -30,29 +30,25 @@ const Index = () => {
   }, [conversations.length, createNewChat, isInitialized]);
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-background">
-      <div className="flex flex-col md:flex-row w-full flex-1">
-        <Sidebar
-          onNewChat={createNewChat}
-          onClearHistory={clearHistory}
-          onDeleteConversation={deleteConversation}
-          conversations={conversations}
-          activeConversation={activeConversationId}
-          onSelectConversation={setActiveConversationId}
-          toggleDarkMode={toggleDarkMode}
-          isDarkMode={isDarkMode}
+    <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden">
+      <Sidebar
+        onNewChat={createNewChat}
+        onClearHistory={clearHistory}
+        onDeleteConversation={deleteConversation}
+        conversations={conversations}
+        activeConversation={activeConversationId}
+        onSelectConversation={setActiveConversationId}
+        toggleDarkMode={toggleDarkMode}
+        isDarkMode={isDarkMode}
+      />
+      
+      <main className="flex-1 flex flex-col w-full">
+        <ChatArea
+          messages={activeConversation?.messages || []}
+          isLoading={isLoading}
+          onSendMessage={sendMessage}
         />
-        
-        <main className="flex-1 flex flex-col w-full">
-          {activeConversation && (
-            <ChatArea
-              messages={activeConversation.messages || []}
-              isLoading={isLoading}
-              onSendMessage={sendMessage}
-            />
-          )}
-        </main>
-      </div>
+      </main>
     </div>
   );
 };

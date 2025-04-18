@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Menu, PanelLeft, PanelLeftClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,20 +42,17 @@ const Sidebar = ({
   if (isMobile) {
     return (
       <>
-        <div className="fixed top-0 left-0 right-0 z-40 h-14 bg-background/80 backdrop-blur-md border-b border-border/50">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-3 left-3 z-50 bg-background/90 backdrop-blur-sm shadow-sm border border-border/50"
-            aria-label="Menu"
-          >
-            <SheetTrigger asChild>
-              <Menu size={24} />
-            </SheetTrigger>
-          </Button>
-        </div>
-
         <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="fixed top-3 left-3 z-50 lg:hidden"
+              aria-label="Menu"
+            >
+              <Menu size={24} />
+            </Button>
+          </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[280px]">
             <SidebarContent {...sidebarContentProps} />
           </SheetContent>
@@ -71,14 +67,14 @@ const Sidebar = ({
   return (
     <>
       <div className={cn(
-        "h-full transition-all duration-300",
+        "fixed top-0 left-0 z-40 h-full transition-all duration-300",
         isActuallyCollapsed ? "w-0" : "w-[280px]"
       )}>
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            "fixed top-3 left-0 translate-x-full z-40 bg-background border border-l-0 rounded-l-none h-9 w-9",
+            "absolute top-3 right-0 translate-x-full z-40 bg-background border border-l-0 rounded-l-none h-9 w-9",
             "lg:top-4 lg:h-10 lg:w-10"
           )}
           onClick={() => setIsCollapsed(!isCollapsed)}
