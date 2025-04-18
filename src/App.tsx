@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChatProvider } from "@/context/ChatContext";
+import RemoveLovableButton from "@/components/RemoveLovableButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -16,6 +17,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <ChatProvider>
+        <RemoveLovableButton />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
