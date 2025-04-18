@@ -158,9 +158,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </div>
       
-      <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-2">
-        <Bot className="h-3 w-3 mr-1 text-primary/70" />
-        <p>LumiChat usa inteligência artificial para gerar respostas.</p>
+      <div className="flex items-center justify-center text-xs text-center text-muted-foreground mt-2 w-full">
+        <div className="flex items-center">
+          <Bot className="h-3 w-3 mr-1 text-primary/70" />
+          <p>LumiChat usa inteligência artificial para gerar respostas.</p>
+        </div>
       </div>
     </div>
   );
