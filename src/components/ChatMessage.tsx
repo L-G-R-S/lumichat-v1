@@ -48,7 +48,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
       
       <div className="flex-1 flex flex-col">
         <div className={cn(
-          "px-5 py-4 rounded-2xl shadow-sm mb-2",
+          "px-5 py-4 rounded-2xl shadow-sm relative",
           isBotMessage 
             ? "bg-secondary/40 text-foreground border border-secondary/40" 
             : "bg-primary/5 text-foreground border border-primary/10"
@@ -72,23 +72,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isLoading = fa
               </ReactMarkdown>
             </div>
           )}
-        </div>
 
-        {isBotMessage && !isLoading && (
-          <div className="flex justify-center">
+          {isBotMessage && !isLoading && (
             <Button
               size="icon"
               variant="ghost"
               className={cn(
-                "opacity-70 hover:opacity-100 transition-opacity",
+                "absolute bottom-2 left-2 opacity-70 hover:opacity-100 transition-opacity",
                 copied && "text-green-500"
               )}
               onClick={copyToClipboard}
             >
               {copied ? <CheckCheck size={16} /> : <Copy size={16} />}
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
