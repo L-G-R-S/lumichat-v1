@@ -42,18 +42,17 @@ const Sidebar = ({
   if (isMobile) {
     return (
       <>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed top-3 left-3 z-50 lg:hidden"
-          aria-label="Menu"
-        >
-          <SheetTrigger asChild>
-            <Menu size={24} />
-          </SheetTrigger>
-        </Button>
-        
         <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="fixed top-3 left-3 z-50 lg:hidden"
+              aria-label="Menu"
+            >
+              <Menu size={24} />
+            </Button>
+          </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[280px]">
             <SidebarContent {...sidebarContentProps} />
           </SheetContent>

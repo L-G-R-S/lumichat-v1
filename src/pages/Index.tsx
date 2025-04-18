@@ -30,7 +30,7 @@ const Index = () => {
   }, [conversations.length, createNewChat, isInitialized]);
 
   return (
-    <div className="flex flex-col min-h-screen w-full">
+    <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden">
       <Sidebar
         onNewChat={createNewChat}
         onClearHistory={clearHistory}

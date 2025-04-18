@@ -16,14 +16,14 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
   const showWelcome = messages.length === 0;
 
   return (
-    <div className="flex-1 flex flex-col w-full overflow-auto min-h-[100dvh]">
+    <div className="flex-1 flex flex-col w-full overflow-auto min-h-[100dvh] max-w-[100vw]">
       {showWelcome ? (
         <WelcomeScreen onSampleQuestionClick={onSendMessage} />
       ) : (
         <MessageList messages={messages} isLoading={isLoading} />
       )}
       
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-2 md:pt-4 pb-4 md:pb-6 border-t border-border/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-2 md:pt-4 pb-4 md:pb-6 border-t border-border/50 w-full">
         <div className="max-w-3xl mx-auto px-4">
           <ChatInput
             onSendMessage={onSendMessage}
