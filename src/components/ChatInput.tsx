@@ -1,8 +1,9 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Mic, MicOff, PlusCircle, Sparkles } from "lucide-react";
+import { Send, Mic, MicOff, PlusCircle, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import FileUploadDialog from "./FileUploadDialog";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -17,6 +18,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
@@ -68,9 +70,21 @@ const ChatInput: React.FC<ChatInputProps> = ({
           size="icon" 
           type="button"
           className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-primary/10"
+          onClick={() => setShowFileUpload(true)}
         >
           <PlusCircle className="h-5 w-5 text-primary/80" />
         </Button>
+        
+        <FileUploadDialog
+          isOpen={showFileUpload}
+          onClose={() => setShowFileUpload(false)}
+          onFileProcess={(content) => {
+            const fileMessage = content.startsWith('data:image/') 
+              ? `[Imagem enviada] ${content}`
+              : `[Arquivo enviado]\n\nConteúdo:\n${content}`;
+            onSendMessage(fileMessage);
+          }}
+        />
         
         <Textarea
           ref={textareaRef}
