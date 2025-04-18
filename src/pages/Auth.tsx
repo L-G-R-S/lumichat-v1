@@ -8,10 +8,10 @@ import { AuthModeSwitcher } from "@/components/auth/AuthModeSwitcher";
 import { AuthFooter } from "@/components/auth/AuthFooter";
 import { AuthFeatures } from "@/components/auth/AuthFeatures";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, BrainCircuit } from "lucide-react";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthMode } from "@/components/auth/types";
+import { Sun, Moon } from "lucide-react";
 
 const Auth: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>('login');
@@ -58,16 +58,16 @@ const Auth: React.FC = () => {
       <AuthSidebar />
       
       <div className="flex items-center justify-center p-6 lg:p-12 relative">
-        {isMobile && (
+        <div className="absolute top-4 right-4 flex items-center space-x-4">
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={toggleDarkMode}
-            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground z-10"
+            className="text-muted-foreground hover:text-foreground z-10"
           >
             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
-        )}
+        </div>
         
         <div className="w-full max-w-md space-y-8">
           <AuthForm
