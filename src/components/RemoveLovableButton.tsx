@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 const RemoveLovableButton = () => {
   useEffect(() => {
-    // Função para remover elementos do Lovable
+    // Função para remover elementos do Lovable com segurança
     const removeLovableElements = () => {
       const selectors = [
         '#lovable-edit-button',
@@ -23,9 +23,16 @@ const RemoveLovableButton = () => {
       
       selectors.forEach(selector => {
         try {
+          // Use querySelectorAll to get all matching elements
           const elements = document.querySelectorAll(selector);
+          // Safe removal - check if the element exists and has a parent
           elements.forEach(el => {
-            el.remove();
+            if (el && el.parentNode) {
+              el.parentNode.removeChild(el);
+            } else if (el) {
+              // Alternative: just hide the element if we can't remove it safely
+              el.style.display = 'none';
+            }
           });
         } catch (error) {
           console.log(`Erro ao remover ${selector}:`, error);
@@ -35,8 +42,16 @@ const RemoveLovableButton = () => {
       // Remover qualquer iframe que possa estar carregando o botão
       const iframes = document.querySelectorAll('iframe');
       iframes.forEach(iframe => {
-        if (iframe.src && (iframe.src.includes('lovable') || iframe.src.includes('gptengineer'))) {
-          iframe.remove();
+        try {
+          if (iframe.src && (iframe.src.includes('lovable') || iframe.src.includes('gptengineer'))) {
+            if (iframe.parentNode) {
+              iframe.parentNode.removeChild(iframe);
+            } else {
+              iframe.style.display = 'none';
+            }
+          }
+        } catch (error) {
+          console.log('Erro ao remover iframe:', error);
         }
       });
     };
@@ -44,50 +59,63 @@ const RemoveLovableButton = () => {
     // Remover imediatamente
     removeLovableElements();
     
-    // Remover a cada intervalo curto por um período mais longo
-    // para garantir que elementos carregados de forma assíncrona sejam capturados
-    const intervals = [100, 500, 1000, 1500, 2000, 3000, 5000];
-    intervals.forEach(time => {
-      setTimeout(removeLovableElements, time);
-    });
+    // Use a safer approach with fewer intervals
+    const intervals = [100, 500, 1000, 2000];
+    const timeouts = intervals.map(time => 
+      setTimeout(removeLovableElements, time)
+    );
     
-    // Remover continuamente a cada 2 segundos por 30 segundos
+    // Use a single interval that runs for a shorter period
     const intervalId = setInterval(removeLovableElements, 2000);
-    setTimeout(() => clearInterval(intervalId), 30000);
+    const clearIntervalTimeout = setTimeout(() => clearInterval(intervalId), 10000);
     
-    // Configurar um MutationObserver para detectar novos elementos
-    const observer = new MutationObserver((mutations) => {
-      removeLovableElements();
-      
-      // Verificar especificamente por novos botões ou divs com "lovable" no nome
-      mutations.forEach(mutation => {
-        if (mutation.addedNodes.length) {
-          mutation.addedNodes.forEach((node: Node) => {
-            if (node instanceof HTMLElement) {
-              const el = node as HTMLElement;
-              if (
-                el.id?.toLowerCase().includes('lovable') || 
-                el.className?.toLowerCase().includes('lovable') ||
-                el.outerHTML?.toLowerCase().includes('lovable')
-              ) {
-                el.remove();
+    // Set up a safer MutationObserver
+    let observer;
+    try {
+      observer = new MutationObserver((mutations) => {
+        let shouldRemove = false;
+        
+        // Check if any new elements match our criteria
+        mutations.forEach(mutation => {
+          if (mutation.addedNodes.length) {
+            mutation.addedNodes.forEach((node) => {
+              if (node instanceof HTMLElement) {
+                const el = node as HTMLElement;
+                if (
+                  (el.id && el.id.toLowerCase().includes('lovable')) || 
+                  (el.className && typeof el.className === 'string' && el.className.toLowerCase().includes('lovable')) ||
+                  (el.outerHTML && el.outerHTML.toLowerCase().includes('lovable'))
+                ) {
+                  shouldRemove = true;
+                }
               }
-            }
-          });
+            });
+          }
+        });
+        
+        // Only run the removal function if necessary
+        if (shouldRemove) {
+          removeLovableElements();
         }
       });
-    });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false  // Reduce overhead by not watching attributes
+      });
+    } catch (error) {
+      console.log('Erro ao configurar MutationObserver:', error);
+    }
     
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['id', 'class']
-    });
-    
+    // Clean up all resources on component unmount
     return () => {
+      timeouts.forEach(timeoutId => clearTimeout(timeoutId));
+      clearTimeout(clearIntervalTimeout);
       clearInterval(intervalId);
-      observer.disconnect();
+      if (observer) {
+        observer.disconnect();
+      }
     };
   }, []);
 
