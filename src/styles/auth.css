@@ -1,0 +1,32 @@
+
+.auth-layout {
+  @apply flex flex-col lg:flex-row min-h-screen w-full overflow-hidden;
+}
+
+.auth-left {
+  @apply w-full lg:w-1/2 min-h-[40vh] lg:h-screen bg-primary/10 dark:bg-primary/5 flex flex-col items-center justify-center relative;
+}
+
+.auth-right {
+  @apply w-full lg:w-1/2 min-h-[60vh] lg:h-screen bg-background dark:bg-background p-6 md:p-8 lg:p-12 flex items-center justify-center;
+}
+
+@media (min-width: 1024px) {
+  .auth-left, .auth-right {
+    width: 50%;
+    height: 100vh;
+    min-height: 0;
+    flex: 1 0 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-left {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    min-height: 45vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
