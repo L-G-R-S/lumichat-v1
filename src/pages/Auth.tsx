@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthMode } from "@/components/auth/types";
-import { Sun, Moon, BrainCircuit, Loader2 } from "lucide-react";
+import { Bot } from "lucide-react";
 
 const Auth: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>('login');
@@ -25,7 +24,6 @@ const Auth: React.FC = () => {
   const { isDarkMode, toggleDarkMode } = useThemeToggle();
   const isMobile = useIsMobile();
 
-  // Simular carregamento inicial para transição suave
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsPageLoading(false);
@@ -76,15 +74,11 @@ const Auth: React.FC = () => {
     }
   };
 
-  // Loading screen
   if (isPageLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <BrainCircuit className="w-12 h-12 text-primary animate-pulse" />
-            <div className="absolute inset-0 bg-gradient-radial from-primary/20 to-transparent opacity-70 rounded-full blur-xl"></div>
-          </div>
+          <Bot className="w-12 h-12 text-primary animate-pulse" />
           <p className="text-sm text-muted-foreground">Carregando...</p>
         </div>
       </div>
@@ -96,7 +90,6 @@ const Auth: React.FC = () => {
       <AuthSidebar />
       
       <div className="flex flex-col items-center justify-center p-6 lg:p-12 relative animate-fade-in">
-        {/* Theme toggle and language selector */}
         <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <Button 
             variant="ghost" 
@@ -109,13 +102,11 @@ const Auth: React.FC = () => {
           </Button>
         </div>
         
-        {/* Mobile logo */}
         <div className="flex items-center justify-center mb-8 lg:hidden">
-          <BrainCircuit className="h-10 w-10 mr-3 text-primary" />
+          <Bot className="h-10 w-10 mr-3 text-primary" />
           <h1 className="text-3xl font-bold text-gradient">LumiChat</h1>
         </div>
         
-        {/* Auth card */}
         <div className="w-full max-w-md glass-card p-8 space-y-8">
           <AuthForm
             mode={mode}
