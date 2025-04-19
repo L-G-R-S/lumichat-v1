@@ -62,10 +62,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
             </Button>
           ))}
         </div>
-        
-        <p className="text-sm text-gray-500 mt-2 md:mt-4 text-center">
-          Para melhores resultados, seja claro e específico em suas perguntas
-        </p>
       </div>
       
       <div className="fixed bottom-24 md:bottom-32 left-0 right-0 text-center">

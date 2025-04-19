@@ -17,7 +17,7 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
 
   return (
     <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto overflow-auto min-h-[100dvh] pb-32">
-      <div className="flex-1 pt-16 md:pt-4 w-full pb-28 md:pb-24">
+      <div className="flex-1 pt-16 md:pt-4 w-full pb-40 md:pb-32">
         {showWelcome ? (
           <WelcomeScreen onSampleQuestionClick={onSendMessage} />
         ) : (
