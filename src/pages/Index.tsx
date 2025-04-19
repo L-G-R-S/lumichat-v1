@@ -42,7 +42,7 @@ const Index = () => {
         isDarkMode={isDarkMode}
       />
       
-      <main className="flex-1 relative">
+      <main className="flex-1 relative overflow-hidden">
         <ChatArea
           messages={activeConversation?.messages || []}
           isLoading={isLoading}

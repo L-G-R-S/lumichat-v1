@@ -22,7 +22,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
   const displayQuestions = isMobile ? sampleQuestions.slice(0, 2) : sampleQuestions;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
       {/* Ícone com efeito de brilho */}
       <div className="relative float-element mb-8">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/40 to-purple-600/40 rounded-full opacity-75 blur-xl"></div>
@@ -40,8 +40,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         Sua assistente de IA inteligente para conversas naturais e intuitivas.
       </p>
 
-      {/* Seção de perguntas exemplo */}
-      <div className="w-full max-w-2xl mb-20">
+      {/* Seção de perguntas exemplo com padding adequado */}
+      <div className="w-full max-w-2xl mb-10">
         <div className="flex items-center justify-center gap-2 mb-4">
           <MessageSquare className="h-4 w-4 md:h-5 md:w-5 text-primary" />
           <h2 className="text-base md:text-lg font-medium">Experimente perguntar</h2>
@@ -68,12 +68,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
       </div>
       
-      {/* Dica de rodapé - Com estilo aprimorado para melhor visibilidade */}
-      <div className="fixed bottom-20 md:bottom-28 left-0 right-0 text-center">
-        <p className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full border border-border/20 shadow-sm max-w-md mx-auto">
-          Para melhores resultados, seja claro e específico em suas perguntas
-        </p>
-      </div>
+      {/* Removendo a dica flutuante que pode causar conflitos de layout */}
     </div>
   );
 };
