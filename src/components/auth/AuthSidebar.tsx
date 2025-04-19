@@ -26,10 +26,11 @@ export const AuthSidebar: React.FC = () => {
           </div>
 
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Uma IA pronta para conversar com você. Simples assim.
+            Uma IA pronta para conversar com você.
           </p>
         </div>
       </div>
     </div>
   );
 };
+
