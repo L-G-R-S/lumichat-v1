@@ -21,7 +21,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
   const displayQuestions = isMobile ? sampleQuestions.slice(0, 2) : sampleQuestions;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 py-8 md:py-12">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
       {/* Ícone com efeito de brilho */}
       <div className="relative float-element mb-8">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/40 to-purple-600/40 rounded-full opacity-75 blur-xl"></div>
@@ -40,27 +40,27 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
       </p>
 
       {/* Seção de perguntas exemplo */}
-      <div className="w-full max-w-3xl mb-24">
-        <div className="flex items-center justify-center gap-2 mb-5">
+      <div className="w-full max-w-2xl mb-20">
+        <div className="flex items-center justify-center gap-2 mb-4">
           <MessageSquare className="h-4 w-4 md:h-5 md:w-5 text-primary" />
           <h2 className="text-base md:text-lg font-medium">Experimente perguntar</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {displayQuestions.map((question, index) => (
             <Button 
               key={index} 
               variant="outline"
-              className="p-3 md:p-4 text-sm text-left justify-start h-auto min-h-[70px] font-normal rounded-xl border
+              className="p-2 md:p-3 text-xs text-left justify-start h-auto min-h-[50px] font-normal rounded-xl border
                 shadow-sm hover:shadow-md hover:bg-primary/5 hover:border-primary/30
                 transition-all duration-200 ease-in-out group"
               onClick={() => onSampleQuestionClick(question)}
             >
-              <div className="flex items-center gap-3 w-full">
-                <div className="bg-primary/10 rounded-full p-1.5 group-hover:bg-primary/20 transition-colors shrink-0">
-                  <HelpCircle className="h-3.5 w-3.5 text-primary" />
+              <div className="flex items-center gap-2 w-full">
+                <div className="bg-primary/10 rounded-full p-1 group-hover:bg-primary/20 transition-colors shrink-0">
+                  <HelpCircle className="h-3 w-3 text-primary" />
                 </div>
-                <span className="line-clamp-2 leading-snug">{question}</span>
+                <span className="line-clamp-2 text-xs leading-tight">{question}</span>
               </div>
             </Button>
           ))}
@@ -68,7 +68,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
       </div>
       
       {/* Dica de rodapé */}
-      <div className="fixed bottom-24 md:bottom-32 left-0 right-0 text-center">
+      <div className="fixed bottom-20 md:bottom-28 left-0 right-0 text-center">
         <p className="text-xs text-muted-foreground px-4 max-w-md mx-auto">
           Para melhores resultados, seja claro e específico em suas perguntas
         </p>
