@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { ArrowDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthSidebar } from "@/components/auth/AuthSidebar";
@@ -101,6 +102,13 @@ const Auth: React.FC = () => {
 
       <div className="auth-left">
         <AuthSidebar />
+        
+        {/* Animated arrow for mobile */}
+        {isMobile && (
+          <div className="w-full flex justify-center mt-4 animate-bounce text-primary/70">
+            <ArrowDown className="w-6 h-6" />
+          </div>
+        )}
       </div>
       
       <div className="auth-right">

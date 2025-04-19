@@ -236,6 +236,13 @@
   }
 }
 
+@media (max-width: 768px) {
+  .auth-left {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+  }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
