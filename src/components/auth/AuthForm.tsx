@@ -55,7 +55,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 animate-scale-in">
+    <form onSubmit={onSubmit} className="space-y-6 animate-scale-in w-full">
       <AuthHeader mode={mode} />
       
       {mode === 'signup' && (

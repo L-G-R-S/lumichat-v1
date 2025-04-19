@@ -87,12 +87,12 @@ const Auth: React.FC = () => {
 
   return (
     <div className="auth-layout">
-      <div className="absolute top-4 right-4 z-10">
+      <div className="fixed top-4 right-4 z-10">
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={toggleDarkMode}
-          className="text-muted-foreground hover:text-foreground rounded-full h-9 w-9"
+          className="text-muted-foreground hover:text-foreground rounded-full h-9 w-9 bg-background/80 backdrop-blur-sm"
           aria-label={isDarkMode ? "Alternar para modo claro" : "Alternar para modo escuro"}
         >
           {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -104,17 +104,7 @@ const Auth: React.FC = () => {
       </div>
       
       <div className="auth-right">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center mb-8 lg:hidden">
-            <h1 className="text-3xl font-bold">Bem-vindo de volta</h1>
-            <p className="text-muted-foreground mt-2">Entre para continuar usando o LumiChat</p>
-          </div>
-          
-          <div className="hidden lg:block text-left mb-8">
-            <h1 className="text-3xl font-bold">Bem-vindo de volta</h1>
-            <p className="text-muted-foreground mt-2">Entre para continuar usando o LumiChat</p>
-          </div>
-          
+        <div className="w-full max-w-md mx-auto px-4 space-y-8">
           <AuthForm
             mode={mode}
             email={email}

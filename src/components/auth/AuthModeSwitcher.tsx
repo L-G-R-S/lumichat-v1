@@ -9,7 +9,7 @@ interface AuthModeSwitcherProps {
 
 export const AuthModeSwitcher: React.FC<AuthModeSwitcherProps> = ({ mode, setMode }) => {
   return (
-    <div className="space-y-4 text-center text-sm">
+    <div className="space-y-4 text-center text-sm animate-fade-in" style={{ animationDelay: "0.2s" }}>
       {mode === 'login' && (
         <>
           <button
