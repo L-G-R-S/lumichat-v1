@@ -24,8 +24,8 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ mode }) => {
   };
 
   return (
-    <div className="text-center mb-8">
-      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-4 mx-auto">
+    <div className="text-center mb-6 md:mb-8">
+      <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 mb-4 mx-auto">
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           width="24" 
@@ -36,7 +36,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ mode }) => {
           strokeWidth="2" 
           strokeLinecap="round" 
           strokeLinejoin="round" 
-          className="h-7 w-7 text-primary"
+          className="h-6 w-6 md:h-7 md:w-7 text-primary"
           aria-hidden="true"
         >
           <path d="M12 8V4H8"></path>
@@ -47,10 +47,10 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ mode }) => {
           <path d="M9 13v2"></path>
         </svg>
       </div>
-      <h1 className="text-2xl font-bold text-gradient mb-1">
+      <h1 className="text-xl md:text-2xl font-bold text-gradient mb-1">
         {getFormTitle()}
       </h1>
-      <p className="text-sm text-muted-foreground mx-auto max-w-xs">
+      <p className="text-sm text-muted-foreground mx-auto max-w-[250px] md:max-w-xs">
         {getFormDescription()}
       </p>
     </div>

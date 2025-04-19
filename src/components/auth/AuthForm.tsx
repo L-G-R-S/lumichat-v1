@@ -55,11 +55,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 animate-scale-in w-full">
+    <form onSubmit={onSubmit} className="space-y-4 md:space-y-6 animate-scale-in w-full max-w-sm mx-auto">
       <AuthHeader mode={mode} />
       
       {mode === 'signup' && (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <label className="text-sm font-medium flex items-center" htmlFor="fullName">
             <User className="w-4 h-4 mr-2 text-muted-foreground" />
             Nome completo
@@ -70,14 +70,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
-            className="bg-background/50"
+            className="bg-background/50 text-base md:text-sm"
             aria-required="true"
             autoComplete="name"
           />
         </div>
       )}
       
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <label className="text-sm font-medium flex items-center" htmlFor="email">
           <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
           E-mail
@@ -89,7 +89,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="bg-background/50"
+          className="bg-background/50 text-base md:text-sm"
           aria-required="true"
           autoComplete={mode === 'login' ? "username" : "email"}
           aria-invalid={email && !/^\S+@\S+\.\S+$/.test(email) ? "true" : "false"}
@@ -120,7 +120,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
 
       <Button
         type="submit"
-        className="w-full btn-primary-glow mt-6 relative overflow-hidden group"
+        className="w-full btn-primary-glow mt-6 h-12 md:h-10 text-base md:text-sm relative overflow-hidden group"
         disabled={loading}
       >
         {loading ? (
