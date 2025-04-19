@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthMode } from "@/components/auth/types";
-import { Bot } from "lucide-react";
+import { Sun, Moon, Bot } from "lucide-react";
 
 const Auth: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>('login');
