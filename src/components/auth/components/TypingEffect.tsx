@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 
 const phrases = [
   "Converse com sua IA pessoal",
-  "Receba respostas inteligentes",
-  "Tenha seu histórico salvo com segurança"
+  "Receba respostas em segundos",
+  "Seu histórico sempre disponível"
 ];
 
 export const TypingEffect: React.FC = () => {
@@ -13,9 +13,9 @@ export const TypingEffect: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   
   useEffect(() => {
-    const typingDelay = 100; // Velocidade de digitação
-    const deletingDelay = 50; // Velocidade de apagar
-    const pauseDelay = 2000; // Pausa entre frases
+    const typingDelay = 100;
+    const deletingDelay = 50;
+    const pauseDelay = 1000;
     
     const type = () => {
       const currentPhrase = phrases[currentPhraseIndex];
@@ -43,10 +43,10 @@ export const TypingEffect: React.FC = () => {
   }, [displayText, currentPhraseIndex, isDeleting]);
 
   return (
-    <div className="h-8 flex items-center justify-center">
-      <p className="text-lg text-primary/80">
+    <div className="min-h-[24px] flex items-center justify-center">
+      <p className="text-lg text-primary/90 font-mono">
         {displayText}
-        <span className="typing-cursor ml-1"></span>
+        <span className="typing-cursor ml-0.5 -mb-0.5 inline-block"></span>
       </p>
     </div>
   );
