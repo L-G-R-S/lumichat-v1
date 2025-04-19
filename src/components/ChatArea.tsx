@@ -16,17 +16,21 @@ const ChatArea = ({ messages, isLoading, onSendMessage }: ChatAreaProps) => {
   const showWelcome = messages.length === 0;
 
   return (
-    <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto overflow-auto min-h-[100dvh] pb-32">
-      <div className="flex-1 pt-16 md:pt-4 w-full">
-        {showWelcome ? (
-          <WelcomeScreen onSampleQuestionClick={onSendMessage} />
-        ) : (
-          <MessageList messages={messages} isLoading={isLoading} />
-        )}
+    <div className="relative flex-1 flex flex-col w-full">
+      {/* Main content area with improved centering */}
+      <div className="flex-1 flex justify-center w-full max-w-[100vw] overflow-x-hidden">
+        <div className="w-full max-w-3xl px-4 md:px-8 pt-16 md:pt-8 pb-32">
+          {showWelcome ? (
+            <WelcomeScreen onSampleQuestionClick={onSendMessage} />
+          ) : (
+            <MessageList messages={messages} isLoading={isLoading} />
+          )}
+        </div>
       </div>
       
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-2 md:pt-4 pb-4 md:pb-6 border-t border-border/50 w-full">
-        <div className="max-w-3xl mx-auto px-4">
+      {/* Input area with proper alignment and glass effect */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md pt-4 pb-6 border-t border-border/50">
+        <div className="w-full max-w-3xl mx-auto px-4 md:px-8">
           <ChatInput
             onSendMessage={onSendMessage}
             isLoading={isLoading}
