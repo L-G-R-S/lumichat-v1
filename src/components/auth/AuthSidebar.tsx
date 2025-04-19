@@ -2,17 +2,10 @@
 import React from 'react';
 import { Bot } from "lucide-react";
 import { TypingEffect } from "./components/TypingEffect";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export const AuthSidebar: React.FC = () => {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return null; // Não renderiza nada em dispositivos móveis
-  }
-
   return (
-    <div className="relative hidden md:flex flex-col items-center justify-center w-full h-full">
+    <div className="relative hidden lg:flex flex-col items-center justify-center w-full h-full">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_var(--tw-gradient-to)_100%)] from-primary/20 to-transparent dark:from-primary/10"></div>
       
       <div className="relative z-10 text-center space-y-8 max-w-sm w-full px-4 py-8">

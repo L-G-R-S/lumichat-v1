@@ -3,13 +3,11 @@ import { useState, useEffect } from "react";
 
 export const useThemeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    // Verificar localStorage ao inicializar
+    // Always default to dark mode unless explicitly set to light in localStorage
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return savedTheme === "dark" || (!savedTheme && prefersDark);
+    return savedTheme !== "light";
   });
 
-  // Aplicar tema quando o componente montar
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");

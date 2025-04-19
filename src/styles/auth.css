@@ -4,11 +4,11 @@
 }
 
 .auth-left {
-  @apply w-full lg:w-1/2 min-h-[35vh] lg:h-screen bg-primary/10 dark:bg-primary/5 flex flex-col items-center justify-center relative;
+  @apply hidden lg:flex w-full lg:w-1/2 lg:h-screen bg-primary/10 dark:bg-primary/5 flex-col items-center justify-center relative;
 }
 
 .auth-right {
-  @apply w-full lg:w-1/2 h-[65vh] lg:h-screen bg-background dark:bg-background p-4 md:p-8 lg:p-12 flex items-center justify-center;
+  @apply w-full lg:w-1/2 h-screen lg:h-screen bg-background dark:bg-background p-4 md:p-8 lg:p-12 flex items-center justify-center;
 }
 
 @media (min-width: 1024px) {
@@ -20,13 +20,9 @@
   }
 }
 
-@media (max-width: 768px) {
-  .auth-left {
-    min-height: 30vh;
-    padding: 1rem;
-  }
-
+@media (max-width: 1023px) {
   .auth-right {
+    height: 100vh;
     padding: 1.5rem;
   }
 }
