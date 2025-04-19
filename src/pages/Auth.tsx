@@ -86,28 +86,25 @@ const Auth: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      <AuthSidebar />
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <div className="absolute top-4 right-4 z-10">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleDarkMode}
+          className="text-muted-foreground hover:text-foreground rounded-full h-9 w-9"
+          aria-label={isDarkMode ? "Alternar para modo claro" : "Alternar para modo escuro"}
+        >
+          {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
+      </div>
+
+      <div className="flex-1 flex flex-col">
+        <AuthSidebar />
+      </div>
       
-      <div className="flex flex-col items-center justify-center p-6 lg:p-12 relative animate-fade-in">
-        <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleDarkMode}
-            className="text-muted-foreground hover:text-foreground rounded-full h-9 w-9"
-            aria-label={isDarkMode ? "Alternar para modo claro" : "Alternar para modo escuro"}
-          >
-            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
-        </div>
-        
-        <div className="flex items-center justify-center mb-8 lg:hidden">
-          <Bot className="h-10 w-10 mr-3 text-primary" />
-          <h1 className="text-3xl font-bold text-gradient">LumiChat</h1>
-        </div>
-        
-        <div className="w-full max-w-md glass-card p-8 space-y-8">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md space-y-8">
           <AuthForm
             mode={mode}
             email={email}
@@ -123,15 +120,6 @@ const Auth: React.FC = () => {
           />
           
           <AuthModeSwitcher mode={mode} setMode={setMode} />
-          
-          {isMobile && (
-            <div className="mt-8 pt-6 border-t border-border lg:hidden">
-              <AuthFeatures />
-            </div>
-          )}
-        </div>
-        
-        <div className="mt-6">
           <AuthFooter />
         </div>
       </div>
