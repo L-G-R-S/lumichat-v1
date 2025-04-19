@@ -111,24 +111,20 @@
     @apply bg-background text-foreground min-h-screen selection:bg-primary/20 selection:text-primary;
   }
 
-  /* Melhorando a acessibilidade para foco */
   :focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-1 ring-offset-background;
   }
   
-  /* Acessibilidade para links e textos */
   a:not([class]) {
     @apply text-primary underline underline-offset-4 hover:text-primary/80;
   }
   
-  /* Transições suaves para todos os elementos interativos */
   button, a, input, textarea, select {
     @apply transition-colors duration-200;
   }
 }
 
 @layer components {
-  /* Efeitos visuais melhorados */
   .glass-effect {
     @apply bg-white/90 backdrop-blur-md border border-white/40 dark:bg-gray-800/80 dark:border-gray-700/50 shadow-subtle;
   }
@@ -141,7 +137,6 @@
     @apply bg-white/40 dark:bg-gray-800/40 backdrop-blur-md border border-white/20 dark:border-gray-700/20 shadow-subtle;
   }
   
-  /* Bolhas de chat aprimoradas */
   .chat-bubble-user {
     @apply bg-primary/10 rounded-t-2xl rounded-bl-2xl rounded-br-md shadow-message border border-primary/10 relative;
   }
@@ -154,12 +149,10 @@
     @apply inline-block w-0.5 h-5 bg-primary animate-blink;
   }
   
-  /* Botões estilizados */
   .btn-primary-glow {
     @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow-sm hover:shadow-glow transition-all duration-300;
   }
   
-  /* Texto gradiente animado */
   .text-gradient {
     @apply bg-gradient-to-r from-primary via-primary/90 to-primary/80 bg-clip-text text-transparent;
   }
@@ -168,28 +161,23 @@
     @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-600 to-primary bg-[length:200%_auto] animate-shimmer;
   }
   
-  /* Cards com efeito hover */
   .hover-card {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated;
   }
   
-  /* Status indicators */
   .status-online {
     @apply w-2 h-2 rounded-full bg-success shadow-glow-sm;
   }
   
-  /* Classes de acessibilidade */
   .sr-only {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
   }
   
-  /* Elementos flutuantes */
   .float-element {
     @apply animate-float;
   }
 }
 
-/* Animações adicionais */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -199,7 +187,6 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
-/* Scrollbar personalizada */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

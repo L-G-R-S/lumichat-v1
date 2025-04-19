@@ -43,7 +43,7 @@ export const TypingEffect: React.FC = () => {
   }, [displayText, currentPhraseIndex, isDeleting]);
 
   return (
-    <div className="min-h-[24px] flex items-center justify-center">
+    <div className="min-h-[24px] flex items-center justify-center py-2">
       <p className="text-lg text-primary/90 font-mono">
         {displayText}
         <span className="typing-cursor ml-0.5 -mb-0.5 inline-block"></span>
@@ -51,3 +51,4 @@ export const TypingEffect: React.FC = () => {
     </div>
   );
 };
+
