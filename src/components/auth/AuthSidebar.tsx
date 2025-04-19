@@ -17,9 +17,6 @@ export const AuthSidebar: React.FC = () => {
 
         <div className="space-y-6">
           <h1 className="text-4xl font-bold text-gradient animate-fade-in">LumiChat</h1>
-          <h2 className="text-2xl font-semibold text-primary/80 dark:text-primary/90">
-            Sua assistente de IA pessoal
-          </h2>
           
           <div className="h-16 flex items-center justify-center">
             <TypingEffect />
