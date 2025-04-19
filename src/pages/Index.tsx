@@ -30,7 +30,7 @@ const Index = () => {
   }, [conversations.length, createNewChat, isInitialized]);
 
   return (
-    <div className="flex h-[100dvh] w-full">
+    <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden">
       <Sidebar
         onNewChat={createNewChat}
         onClearHistory={clearHistory}
@@ -42,14 +42,12 @@ const Index = () => {
         isDarkMode={isDarkMode}
       />
       
-      <main className="flex-1 relative overflow-hidden flex flex-col items-center">
-        <div className="w-full max-w-3xl h-full relative">
-          <ChatArea
-            messages={activeConversation?.messages || []}
-            isLoading={isLoading}
-            onSendMessage={sendMessage}
-          />
-        </div>
+      <main className="flex-1 flex flex-col w-full">
+        <ChatArea
+          messages={activeConversation?.messages || []}
+          isLoading={isLoading}
+          onSendMessage={sendMessage}
+        />
       </main>
     </div>
   );
