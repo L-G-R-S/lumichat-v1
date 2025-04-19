@@ -6,11 +6,11 @@ import { TypingEffect } from "./components/TypingEffect";
 export const AuthSidebar: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
-      <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen bg-primary/10 dark:bg-primary/5 relative overflow-hidden p-8 flex items-center justify-center">
+      <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-screen bg-primary/10 dark:bg-primary/5 relative p-8 flex items-center justify-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_var(--tw-gradient-to)_100%)] from-primary/20 to-transparent dark:from-primary/10"></div>
         
-        <div className="relative z-10 text-center space-y-8 max-w-lg">
-          <div className="inline-flex items-center gap-4 mb-2">
+        <div className="relative z-10 text-center space-y-8 max-w-lg w-full">
+          <div className="inline-flex items-center justify-center w-full gap-4 mb-2">
             <div className="p-4 rounded-full bg-primary/10 dark:bg-primary/20">
               <Bot className="h-8 w-8 text-primary" />
             </div>
@@ -35,4 +35,3 @@ export const AuthSidebar: React.FC = () => {
     </div>
   );
 };
-

@@ -5,7 +5,6 @@ import { AuthSidebar } from "@/components/auth/AuthSidebar";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { AuthModeSwitcher } from "@/components/auth/AuthModeSwitcher";
 import { AuthFooter } from "@/components/auth/AuthFooter";
-import { AuthFeatures } from "@/components/auth/AuthFeatures";
 import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -86,7 +85,7 @@ const Auth: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row w-full min-h-screen">
       <div className="absolute top-4 right-4 z-10">
         <Button 
           variant="ghost" 
@@ -99,12 +98,22 @@ const Auth: React.FC = () => {
         </Button>
       </div>
 
-      <div className="flex-1 flex flex-col">
+      <div className="w-full lg:w-1/2 flex">
         <AuthSidebar />
       </div>
       
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-background dark:bg-background">
         <div className="w-full max-w-md space-y-8">
+          <div className="text-center mb-8 lg:hidden">
+            <h1 className="text-3xl font-bold">Bem-vindo de volta</h1>
+            <p className="text-muted-foreground mt-2">Entre para continuar usando o LumiChat</p>
+          </div>
+          
+          <div className="hidden lg:block text-left mb-8">
+            <h1 className="text-3xl font-bold">Bem-vindo de volta</h1>
+            <p className="text-muted-foreground mt-2">Entre para continuar usando o LumiChat</p>
+          </div>
+          
           <AuthForm
             mode={mode}
             email={email}

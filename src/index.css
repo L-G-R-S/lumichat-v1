@@ -212,3 +212,25 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.7);
 }
+
+/* Auth page specific styles */
+.auth-layout {
+  @apply flex flex-col lg:flex-row min-h-screen w-full;
+}
+
+.auth-left {
+  @apply w-full lg:w-1/2 min-h-[40vh] lg:min-h-screen bg-primary/10 dark:bg-primary/5 p-6 lg:p-12 flex items-center justify-center relative;
+}
+
+.auth-right {
+  @apply w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen bg-background dark:bg-background p-6 lg:p-12 flex items-center justify-center;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}

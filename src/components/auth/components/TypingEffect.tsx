@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const phrases = [
@@ -51,4 +50,3 @@ export const TypingEffect: React.FC = () => {
     </div>
   );
 };
-
