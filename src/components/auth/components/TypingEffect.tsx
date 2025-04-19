@@ -11,58 +11,47 @@ export const TypingEffect: React.FC = () => {
   const [displayText, setDisplayText] = useState('');
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
   
   useEffect(() => {
-    // Configurações otimizadas para uma animação mais suave
-    const typingDelay = 80; // Um pouco mais rápido
-    const deletingDelay = 40; // Um pouco mais rápido
-    const pauseDelay = 1200; // Pausa mais longa no final da frase
+    let timer: ReturnType<typeof setTimeout>;
     
-    // Função principal de animação de digitação
     const type = () => {
       const currentPhrase = phrases[currentPhraseIndex];
-      
-      if (isPaused) {
-        // Se estiver pausado, espere e então comece a deletar
-        setTimeout(() => {
-          setIsPaused(false);
-          setIsDeleting(true);
-        }, pauseDelay);
-        return;
-      }
       
       if (!isDeleting) {
         // Digitando
         if (displayText.length < currentPhrase.length) {
-          setDisplayText(currentPhrase.slice(0, displayText.length + 1));
+          setDisplayText(currentPhrase.substring(0, displayText.length + 1));
+          timer = setTimeout(type, 100);
         } else {
-          // Chegou ao final da frase, pausar antes de começar a deletar
-          setIsPaused(true);
-          return; // Importante: retorne para não agendar outro timeout
+          // Chegou ao final da frase, pausa antes de começar a deletar
+          timer = setTimeout(() => {
+            setIsDeleting(true);
+            type();
+          }, 1500);
         }
       } else {
         // Deletando
         if (displayText.length > 0) {
-          setDisplayText(displayText.slice(0, -1));
+          setDisplayText(displayText.substring(0, displayText.length - 1));
+          timer = setTimeout(type, 50);
         } else {
-          // Terminou de deletar, mude para a próxima frase
+          // Terminou de deletar, muda para a próxima frase
           setIsDeleting(false);
           setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+          timer = setTimeout(type, 200);
         }
       }
-
-      // Agende o próximo frame
-      const nextDelay = isDeleting ? deletingDelay : typingDelay;
-      setTimeout(type, nextDelay);
     };
 
     // Inicie a animação
-    const timer = !isPaused ? setTimeout(type, isDeleting ? deletingDelay : typingDelay) : null;
+    timer = setTimeout(type, 200);
+    
+    // Limpar o timer quando o componente for desmontado
     return () => {
-      if (timer) clearTimeout(timer);
+      clearTimeout(timer);
     };
-  }, [displayText, currentPhraseIndex, isDeleting, isPaused]);
+  }, [displayText, currentPhraseIndex, isDeleting]);
 
   return (
     <div className="flex items-center justify-center py-2 h-full">
