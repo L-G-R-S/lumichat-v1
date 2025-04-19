@@ -32,7 +32,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
       </div>
       
       {/* Título e subtítulo */}
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-primary mb-3 md:mb-4">
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-primary mb-3 md:mb-4 text-center">
         LumiChat
       </h1>
       
@@ -68,9 +68,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
       </div>
       
-      {/* Dica de rodapé */}
-      <div className="flex items-center mt-8 text-xs text-muted-foreground bg-muted/30 px-4 py-2 rounded-full">
-        <p>Para melhores resultados, seja claro e específico em suas perguntas</p>
+      {/* Dica de rodapé - MOVED TO CORRECT POSITION */}
+      <div className="mt-6 text-center text-xs text-muted-foreground px-4 max-w-md">
+        Para melhores resultados, seja claro e específico em suas perguntas
       </div>
     </div>
   );
