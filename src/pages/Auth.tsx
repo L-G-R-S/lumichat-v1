@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -85,7 +86,7 @@ const Auth: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen">
+    <div className="auth-layout">
       <div className="absolute top-4 right-4 z-10">
         <Button 
           variant="ghost" 
@@ -98,11 +99,11 @@ const Auth: React.FC = () => {
         </Button>
       </div>
 
-      <div className="w-full lg:w-1/2 flex">
+      <div className="auth-left">
         <AuthSidebar />
       </div>
       
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-background dark:bg-background">
+      <div className="auth-right">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8 lg:hidden">
             <h1 className="text-3xl font-bold">Bem-vindo de volta</h1>

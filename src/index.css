@@ -215,11 +215,11 @@
 
 /* Auth page specific styles */
 .auth-layout {
-  @apply flex flex-col lg:flex-row min-h-screen w-full;
+  @apply flex flex-col lg:flex-row min-h-screen w-full overflow-hidden;
 }
 
 .auth-left {
-  @apply w-full lg:w-1/2 min-h-[40vh] lg:min-h-screen bg-primary/10 dark:bg-primary/5 p-6 lg:p-12 flex items-center justify-center relative;
+  @apply w-full lg:w-1/2 min-h-[40vh] lg:min-h-screen bg-primary/10 dark:bg-primary/5 flex items-center justify-center relative;
 }
 
 .auth-right {
@@ -233,4 +233,8 @@
 
 .animate-blink {
   animation: blink 1s step-end infinite;
+}
+
+.typing-cursor {
+  @apply inline-block w-0.5 h-5 bg-primary animate-blink;
 }
