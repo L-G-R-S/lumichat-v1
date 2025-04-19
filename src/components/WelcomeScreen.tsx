@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bot, MessageSquare, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,8 +21,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
   const displayQuestions = isMobile ? sampleQuestions.slice(0, 2) : sampleQuestions;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
-      {/* Ícone com efeito de brilho */}
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto py-8 md:py-12">
       <div className="relative float-element mb-8">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/40 to-purple-600/40 rounded-full opacity-75 blur-xl"></div>
         <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 relative z-10 shadow-lg">
@@ -31,7 +29,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
       </div>
       
-      {/* Título e subtítulo */}
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-primary mb-3 md:mb-4 text-center">
         LumiChat
       </h1>
@@ -40,7 +37,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         Sua assistente de IA inteligente para conversas naturais e intuitivas.
       </p>
 
-      {/* Seção de perguntas exemplo com padding adequado */}
       <div className="w-full max-w-2xl mb-10">
         <div className="flex items-center justify-center gap-2 mb-4">
           <MessageSquare className="h-4 w-4 md:h-5 md:w-5 text-primary" />
@@ -67,8 +63,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
           ))}
         </div>
       </div>
-      
-      {/* Removendo a dica flutuante que pode causar conflitos de layout */}
     </div>
   );
 };
