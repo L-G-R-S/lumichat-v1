@@ -11,6 +11,15 @@
   @apply w-full lg:w-1/2 h-screen lg:h-screen bg-background dark:bg-background p-4 md:p-8 lg:p-12 flex items-center justify-center;
 }
 
+.logo-glow-container {
+  @apply relative flex justify-center items-center;
+}
+
+.logo-glow-container::before {
+  content: "";
+  @apply absolute w-[140px] h-[140px] rounded-full bg-[radial-gradient(circle,rgba(167,139,250,0.35),transparent_70%)] blur-[40px] z-0;
+}
+
 @media (min-width: 1024px) {
   .auth-left, .auth-right {
     width: 50%;
@@ -26,3 +35,4 @@
     padding: 1.5rem;
   }
 }
+

@@ -13,26 +13,20 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
   }
 }
 
-.animate-float {
-  animation: float 2s ease-in-out infinite;
+.float-element {
+  animation: floatUpDown 3s ease-in-out infinite;
 }
 
-@media (min-width: 768px) {
-  .animate-float {
-    animation: float-horizontal 2s ease-in-out infinite;
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0px);
   }
-
-  @keyframes float-horizontal {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(5px);
-    }
+  50% {
+    transform: translateY(-8px);
   }
 }
 
@@ -48,3 +42,4 @@
 .typing-cursor {
   @apply inline-block w-0.5 h-5 bg-primary animate-blink relative top-0.5;
 }
+

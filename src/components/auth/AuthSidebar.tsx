@@ -10,8 +10,10 @@ export const AuthSidebar: React.FC = () => {
       
       <div className="relative z-10 text-center space-y-8 max-w-sm w-full px-4 py-8">
         <div className="flex justify-center mb-2">
-          <div className="p-4 rounded-full bg-primary/10 dark:bg-primary/20 float-element">
-            <Bot className="h-8 w-8 text-primary" aria-hidden="true" />
+          <div className="logo-glow-container">
+            <div className="p-4 rounded-full bg-primary/10 dark:bg-primary/20 float-element relative z-10">
+              <Bot className="h-8 w-8 text-primary" aria-hidden="true" />
+            </div>
           </div>
         </div>
 
@@ -26,3 +28,4 @@ export const AuthSidebar: React.FC = () => {
     </div>
   );
 };
+
