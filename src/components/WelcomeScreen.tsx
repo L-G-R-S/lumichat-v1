@@ -43,28 +43,28 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
           <h2 className="text-base md:text-lg font-medium">Experimente perguntar</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
           {displayQuestions.map((question, index) => (
             <Button 
               key={index} 
               variant="outline"
-              className="p-2 md:p-3 text-xs text-left justify-start h-auto min-h-[50px] font-normal rounded-xl border
+              className="p-4 text-sm text-left justify-start h-auto min-h-[60px] font-normal rounded-xl border
                 shadow-sm hover:shadow-md hover:bg-primary/5 hover:border-primary/30
-                transition-all duration-200 ease-in-out group"
+                transition-all duration-200 ease-in-out group w-full"
               onClick={() => onSampleQuestionClick(question)}
             >
-              <div className="flex items-center gap-2 w-full">
-                <div className="bg-primary/10 rounded-full p-1 group-hover:bg-primary/20 transition-colors shrink-0">
-                  <HelpCircle className="h-3 w-3 text-primary" />
+              <div className="flex items-center gap-3 w-full">
+                <div className="bg-primary/10 rounded-full p-2 group-hover:bg-primary/20 transition-colors shrink-0">
+                  <HelpCircle className="h-4 w-4 text-primary" />
                 </div>
-                <span className="line-clamp-2 text-xs leading-tight">{question}</span>
+                <span className="line-clamp-2 text-sm leading-snug">{question}</span>
               </div>
             </Button>
           ))}
         </div>
       </div>
       
-      <div className="fixed bottom-20 md:bottom-28 left-0 right-0 text-center">
+      <div className="fixed bottom-24 md:bottom-32 left-0 right-0 text-center">
         <p className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full border border-border/20 shadow-sm max-w-md mx-auto">
           Para melhores resultados, seja claro e específico em suas perguntas
         </p>
