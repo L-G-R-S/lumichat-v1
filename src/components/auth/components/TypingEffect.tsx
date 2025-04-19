@@ -19,24 +19,24 @@ export const TypingEffect: React.FC = () => {
       const currentPhrase = phrases[currentPhraseIndex];
       
       if (!isDeleting) {
-        // Digitando - reduzido de 100 para 70ms
+        // Typing - reduced from 100 to 30 ms for faster typing
         if (displayText.length < currentPhrase.length) {
           setDisplayText(currentPhrase.substring(0, displayText.length + 1));
-          timer = setTimeout(type, 70);
+          timer = setTimeout(type, 30);
         } else {
-          // Chegou ao final da frase, pausa antes de começar a deletar
+          // Reached end of phrase, pause before starting to delete
           timer = setTimeout(() => {
             setIsDeleting(true);
             type();
           }, 1200);
         }
       } else {
-        // Deletando - reduzido de 50 para 30ms
+        // Deleting - reduced from 50 to 20 ms for faster deleting
         if (displayText.length > 0) {
           setDisplayText(displayText.substring(0, displayText.length - 1));
-          timer = setTimeout(type, 30);
+          timer = setTimeout(type, 20);
         } else {
-          // Terminou de deletar, muda para a próxima frase
+          // Finished deleting, switch to next phrase
           setIsDeleting(false);
           setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
           timer = setTimeout(type, 200);
@@ -44,10 +44,10 @@ export const TypingEffect: React.FC = () => {
       }
     };
 
-    // Inicie a animação
+    // Start the animation
     timer = setTimeout(type, 200);
     
-    // Limpar o timer quando o componente for desmontado
+    // Clear the timer when the component is unmounted
     return () => {
       clearTimeout(timer);
     };
@@ -62,3 +62,4 @@ export const TypingEffect: React.FC = () => {
     </div>
   );
 };
+
