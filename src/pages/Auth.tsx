@@ -105,8 +105,8 @@ const Auth: React.FC = () => {
         
         {/* Animated arrow for mobile */}
         {isMobile && (
-          <div className="w-full flex justify-center mt-4 animate-bounce text-primary/70">
-            <ArrowDown className="w-6 h-6" />
+          <div className="w-full flex justify-center mt-8 mb-4 animate-bounce text-primary">
+            <ArrowDown className="w-8 h-8" />
           </div>
         )}
       </div>
