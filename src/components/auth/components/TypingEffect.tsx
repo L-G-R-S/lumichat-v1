@@ -19,22 +19,22 @@ export const TypingEffect: React.FC = () => {
       const currentPhrase = phrases[currentPhraseIndex];
       
       if (!isDeleting) {
-        // Digitando
+        // Digitando - reduzido de 100 para 70ms
         if (displayText.length < currentPhrase.length) {
           setDisplayText(currentPhrase.substring(0, displayText.length + 1));
-          timer = setTimeout(type, 100);
+          timer = setTimeout(type, 70);
         } else {
           // Chegou ao final da frase, pausa antes de começar a deletar
           timer = setTimeout(() => {
             setIsDeleting(true);
             type();
-          }, 1500);
+          }, 1200);
         }
       } else {
-        // Deletando
+        // Deletando - reduzido de 50 para 30ms
         if (displayText.length > 0) {
           setDisplayText(displayText.substring(0, displayText.length - 1));
-          timer = setTimeout(type, 50);
+          timer = setTimeout(type, 30);
         } else {
           // Terminou de deletar, muda para a próxima frase
           setIsDeleting(false);
