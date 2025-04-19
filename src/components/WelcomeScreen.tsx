@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Bot, MessageSquare, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,9 +68,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSampleQuestionClick }) 
         </div>
       </div>
       
-      {/* Dica de rodapé */}
+      {/* Dica de rodapé - Com estilo aprimorado para melhor visibilidade */}
       <div className="fixed bottom-20 md:bottom-28 left-0 right-0 text-center">
-        <p className="text-xs text-muted-foreground px-4 max-w-md mx-auto">
+        <p className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full border border-border/20 shadow-sm max-w-md mx-auto">
           Para melhores resultados, seja claro e específico em suas perguntas
         </p>
       </div>
